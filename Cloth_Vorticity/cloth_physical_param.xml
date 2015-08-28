@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<property>
+	
+	<youngs_modulus>
+	  2.0e1
+	</youngs_modulus>
+	
+	<poisson_ratio> 
+		0.38 
+	</poisson_ratio>
+	
+	<time_step> 
+		0.001
+	</time_step>
+	
+	<thickness> 
+		0.05 
+	</thickness>
+	
+	<max_iter> 
+		1000 
+	</max_iter>
+	
+	<friction_coeff> 
+		0.32 
+	</friction_coeff>
+	
+	<damping_param> 
+		-5.0e-5
+	</damping_param>
+	
+	<k_bend> 
+		1.0e-4 
+	</k_bend>
+	
+	<density> 
+		0.7
+	</density>
+	
+</property>
