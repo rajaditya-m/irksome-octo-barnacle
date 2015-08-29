@@ -1,5 +1,17 @@
 #pragma once
 
+#define OPEN_MP
+#ifdef OPEN_MP
+#  include <omp.h>
+#  ifndef _MSC_VER
+#    define OMP_FOR _Pragma("omp parallel for")
+#  else
+#    define OMP_FOR __pragma(omp parallel for)
+#  endif // vs compiler
+#else // no omp
+#  define OMP_FOR
+#endif // #ifndef OPEN_MP
+
 #include <vector>
 #include <algorithm>
 #include <Eigen/Dense>
@@ -7,7 +19,6 @@
 #include "debug_funcs.h"
 #include "dynamics_solver_interface.h"
 #include "cloth_data.h"	
-
 
 class FEM_Solver :
 	public Dynamics_Solver_Interface

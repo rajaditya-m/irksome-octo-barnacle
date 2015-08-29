@@ -42,6 +42,8 @@ public:
 
 	void addRenderObject(RenderObject* obj);
 
+	int performSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos); 
+
 	//Rendering Functions 
 	void renderScene();
 	void setupScene();

@@ -48,6 +48,7 @@ void FEM_Solver::compute_shear_forces(Cloth_Data* cloth)
 	}
 	std::fill(shear_forces.begin(),shear_forces.end(),Eigen::Vector3d::Zero());
 	
+	OMP_FOR
 	for(int t=0;t<num_triangles;t++)
 	{
 		Triangles tri = cloth->getMesh()->get_triangle(t);
@@ -122,13 +123,18 @@ void FEM_Solver::compute_bending_forces(Cloth_Data* cloth)
 
 	std::set<Edge> edge_list = cloth->getMesh()->get_edge_list();
 	std::set<Edge>::iterator it;
+
+	std::vector<Edge> edgeVector = cloth->getMesh()->getEdgeVector();
+	int sizeOfEdgeVector = cloth->getMesh()->getEdgeVectorSize();
+
 	int counter = 0;
-	for(it = edge_list.begin();it != edge_list.end();++it)
+	OMP_FOR
+	for(int i=0;i<sizeOfEdgeVector;i++)
 	{
-		int t1 = it->get_tri_1();
-		int t2 = it->get_tri_2();
-		int v3 = it->get_start_vertex();
-		int v4 = it->get_end_vertex();
+		int t1 = edgeVector[i].get_tri_1();
+		int t2 = edgeVector[i].get_tri_2();
+		int v3 = edgeVector[i].get_start_vertex();
+		int v4 = edgeVector[i].get_end_vertex();
 
 		if(t2==-1)
 			continue;
@@ -245,6 +251,7 @@ void FEM_Solver::compute_gravity_forces(Cloth_Data* cloth)
 		gravity_forces.resize(num_vertices);
 	}
 	
+	OMP_FOR
 	for(int p=0;p<num_vertices;p++)
 	{
 		float grav_force = cloth->get_vertex_mass(p) * 9.8f;
@@ -263,6 +270,7 @@ void FEM_Solver::computeDampingForce(Cloth_Data* cloth)
 		dampingForce_[p] = Eigen::Vector3d::Zero();
 	}
 
+	OMP_FOR
 	for(int t=0; t<numTriangles; t++)
 	{
 		Triangles tri = cloth->getMesh()->get_triangle(t);
@@ -296,6 +304,7 @@ void FEM_Solver::get_next_velocity_positions(Cloth_Data* cloth)
 	{
 		acceleration_.resize(num_vertices);
 	}
+	OMP_FOR
 	for(int p=0;p<num_vertices;p++)
 	{
 		Eigen::Vector3d tot_force = shear_forces[p]+gravity_forces[p]+bend_forces[p]+dampingForce_[p];
@@ -305,6 +314,10 @@ void FEM_Solver::get_next_velocity_positions(Cloth_Data* cloth)
 		Eigen::Vector3d old_vel = cloth->get_velocity(p);
 		Eigen::Vector3d new_vel = old_vel + (time_step * acceleration_[p]);
 		Eigen::Vector3d new_pos = old_pos + (time_step * new_vel);
+		if(p==2600 || p==50) {
+			new_pos = old_pos;
+			new_vel = Eigen::Vector3d::Zero();
+		}
 		cloth->set_next_step_pos(new_pos,p);
 		cloth->set_next_step_velocity(new_vel,p);
 	}

@@ -90,6 +90,54 @@ inline bool compare_point_geq(Eigen::Vector3d a, Eigen::Vector3d b)
 	return true;
 }
 
+inline bool segmentTriangleIntersection(double* segment_start, double* segment_end,
+																 double* tri_v0, double* tri_v1, double* tri_v2,
+																 double threshold, double& u, double& v, double& t) {
+	const double kEpsilon = 1e-10;
+	Eigen::Vector3d d = Eigen::Map<Eigen::Vector3d>(segment_end) - Eigen::Map<Eigen::Vector3d>(segment_start);
+	Eigen::Vector3d e1,e2,pvec;
+	e1 = Eigen::Map<Eigen::Vector3d>(tri_v1) - Eigen::Map<Eigen::Vector3d>(tri_v0);
+	e2 = Eigen::Map<Eigen::Vector3d>(tri_v2) - Eigen::Map<Eigen::Vector3d>(tri_v0);
+	pvec = d.cross(e2);
+	double det = e1.dot(pvec);
+	if(std::abs(det) <= kEpsilon) 
+		return false;
+
+	double invDet = 1.0/det;
+
+	Eigen::Vector3d tvec = Eigen::Map<Eigen::Vector3d>(segment_start) - Eigen::Map<Eigen::Vector3d>(tri_v0);
+
+	u = tvec.dot(pvec) * invDet;
+
+	if(u <-threshold || 1.0 + threshold < u) 
+		return false;
+
+	Eigen::Vector3d qvec = tvec.cross(e1);
+	v = d.dot(qvec) * invDet;
+	if (-threshold > v || 1.0 + threshold < u + v )
+		return false;
+	t = e2.dot(qvec) * invDet;
+	if (t < -threshold || t >= 1.0 + threshold)
+		return false;
+
+	return true;
+}
+
+inline double pointLineDistance(double *p0, double *p1, double *p, double* length = NULL) {
+	Eigen::Vector3d vec1 = Eigen::Map<Eigen::Vector3d>(p1) - Eigen::Map<Eigen::Vector3d>(p0);
+	vec1.normalize();
+	Eigen::Vector3d vec2 = Eigen::Map<Eigen::Vector3d>(p) - Eigen::Map<Eigen::Vector3d>(p0);
+	double projectionLength = vec1.dot(vec2);
+	if (length) {
+		*length = projectionLength;
+	}
+	double vec2Norm = vec2.norm();
+	double distance = 0;
+	distance = std::sqrt((vec2Norm*vec2Norm) - (projectionLength*projectionLength));
+	return distance;
+}
+
+
 /*
 inline Eigen::Matrix3d compute_rotation_matrix_a_to_b(Eigen::Vector3d norm_in_a,Eigen::Vector3d norm_in_b)
 {

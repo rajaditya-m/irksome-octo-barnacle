@@ -133,7 +133,7 @@ public:
         horizontalSlider = new QSlider(centralWidget);
         horizontalSlider->setObjectName(QStringLiteral("horizontalSlider"));
         horizontalSlider->setGeometry(QRect(9, 680, 1101, 22));
-        horizontalSlider->setMaximum(300);
+        horizontalSlider->setMaximum(3000);
         horizontalSlider->setOrientation(Qt::Horizontal);
         horizontalSlider->setTickPosition(QSlider::TicksBelow);
         horizontalSlider->setTickInterval(5);
@@ -142,7 +142,7 @@ public:
         doubleSpinBox->setGeometry(QRect(1120, 680, 62, 21));
         doubleSpinBox->setWrapping(true);
         doubleSpinBox->setDecimals(0);
-        doubleSpinBox->setMaximum(500);
+        doubleSpinBox->setMaximum(3000);
         Cloth_VorticityClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(Cloth_VorticityClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));

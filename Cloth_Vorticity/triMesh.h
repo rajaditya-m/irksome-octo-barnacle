@@ -1,5 +1,17 @@
 #pragma once
 
+#define OPEN_MP
+#ifdef OPEN_MP
+#  include <omp.h>
+#  ifndef _MSC_VER
+#    define OMP_FOR _Pragma("omp parallel for")
+#  else
+#    define OMP_FOR __pragma(omp parallel for)
+#  endif // vs compiler
+#else // no omp
+#  define OMP_FOR
+#endif // #ifndef OPEN_MP
+
 #include <vector>
 #include <set>
 #include <fstream>
@@ -63,6 +75,8 @@ public:
 	Eigen::Vector2d get_uv_data(int idx) const							{ return texture_data[idx];				}
 	Eigen::Vector2d get_texture_data(int idx) const						{ return texture_data[idx];				}
 	std::set<Edge>& get_edge_list()										{ return edge_list;						}
+	std::vector<Edge>& getEdgeVector()                { return edgeVector_;}
+	int getEdgeVectorSize()                           { return edgeVectorSize_;}
 	Grid* get_grid_obj() const											{ return voxel_grid;					}
 	bool isStatic() const												{ return static_;						}
 
@@ -80,6 +94,7 @@ public:
 	void generate_frame_normals(int frame_idx) ;
 	void add_frame_data(std::vector<Eigen::Vector3d> &vec);
 	void resetMeshDefaults();
+	int performMeshSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos, int frameId);
 
 	//Drawing Functions 
 	void draw_mesh(int idx);
@@ -104,6 +119,8 @@ private:
 	std::vector<Triangles> mesh_data;
 	std::vector<bool> part_of_mesh;
 	std::set<Edge> edge_list;
+	std::vector<Edge> edgeVector_;
+	int edgeVectorSize_;
 	Vector_Vec2d texture_data;
 
 	const float CONST_SCALING;

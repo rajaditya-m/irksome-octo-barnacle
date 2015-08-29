@@ -145,7 +145,7 @@ void GLWidget::setRenderingFrameNumber(int frame_number)
 
 void GLWidget::startAnimation()
 {
-	animation_timer->start(30);
+	animation_timer->start(20);
 }
 
 void GLWidget::pauseAnimation()
@@ -253,7 +253,7 @@ void GLWidget::nextFrame()
 {
 	int renderFrame = scene_->getCurrentRenderFrame();
 	renderFrame++;
-	if(renderFrame==301)
+	if(renderFrame==3001)
 		renderFrame = 0;
 	scene_->setCurrentRenderFrame(renderFrame);
 	int cloth_frame_available = (cloth_information_->getMesh()->get_number_frames())-1;
@@ -270,6 +270,25 @@ void GLWidget::nextFrame()
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
+	QPoint cur_pos = event->pos();
+	if(event->buttons() & Qt::LeftButton) {
+		double clickedWorldPos[3];
+		double rayStart[3], rayEnd[3];
+		double selectedPos[3];
+		getPixelWorldPosition(cur_pos.x(),cur_pos.y(),clickedWorldPos);
+		getSelectionRay(cur_pos.x(),cur_pos.y(),rayStart,rayEnd);
+		//std::cout << "Clicked World Pos:" << clickedWorldPos[0] << " "  << clickedWorldPos[1] << " " << clickedWorldPos[2] << "\n";
+		//std::cout << "Clicked Ray Start:" << rayStart[0] << " "  << rayStart[1] << " " << rayStart[2] << "\n";
+		//std::cout << "Clicked Ray End  :" << rayEnd[0] << " "  << rayEnd[1] << " " << rayEnd[2] << "\n";
+		int vertexClicked = scene_->performSelectionRayTest(rayStart,rayEnd,clickedWorldPos,selectedPos);
+		if(vertexClicked!=-1) {
+			std::cout << "Vertex Clicked :"  << vertexClicked <<  " [" << selectedPos[0] << "," << selectedPos[1] << "," << selectedPos[2] <<   "]\n";
+		}
+		else {
+			std::cout << "No vertex clicked.\n";
+		}
+	}
+	updateGL();
 	scene_->setLastPosition(event->pos());
 }
 
@@ -307,9 +326,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 		{
 			scene_->setScaling(old_size);
 		}
-	}
-	else if(event->buttons() & Qt::LeftButton) {
-		float depth = getPixelDepth(cur_pos.x(),cur_pos.y());
 	}
 	updateGL();
 	scene_->setLastPosition(cur_pos);

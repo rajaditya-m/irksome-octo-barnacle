@@ -23,3 +23,7 @@ void RenderObject::render(int frameId)
 		}
 	}
 }
+
+int RenderObject::performObjectSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos, int frameId) {
+	return mesh_->performMeshSelectionRayTest(rayStart, rayEnd, clickedWorldPos, selectedPos,frameId);
+}

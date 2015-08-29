@@ -29,6 +29,8 @@ public:
 
 	bool isRotationInvariant() const			{ return rotationInvariant_;	}
 
+	int performObjectSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos, int frameId);
+
 protected:
 	TriMesh* mesh_;
 	bool render_;

@@ -291,3 +291,19 @@ GLubyte* Scene::readAsciiPPMImage(char* fName,int* height,int* width)
 			fclose(in);
 			return texImg; 
 }
+
+int Scene::performSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos) {
+	//Interate over the renderable object 
+	std::vector<RenderObject*>::iterator it;
+	for(it = renderObj_.begin(); it!= renderObj_.end(); ++it)
+	{
+	  bool isVisible = (*it)->isRenderable();
+		if(!isVisible)
+			continue;
+	  int vertexSelected = (*it)->performObjectSelectionRayTest(rayStart, rayEnd, clickedWorldPos, selectedPos,renderFrame_);
+		if(vertexSelected != -1) {
+			return vertexSelected;
+		}
+	}
+	return -1;
+}
