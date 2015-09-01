@@ -14,7 +14,7 @@ public:
 	void generate_next_frame();
 	void populatePerVertexBuffer();
 
-private:
+public:
 	
 
 	Cloth_Data* clothData_;

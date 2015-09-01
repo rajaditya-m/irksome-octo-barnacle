@@ -22,6 +22,12 @@ public:
 	void setRenderable(bool render)				{ render_ = render;				}
 	bool isRenderable() const					{ return render_;				}
 
+	void setLastClickedVertex(int p)   { lastClickedVertex_ = p;}
+	int getLastClickedVertex()         { return lastClickedVertex_;}
+
+	void setLastClickedPosition(Eigen::Vector3d pos) { lastClickedPosition_ = pos;}
+	Eigen::Vector3d getLastClickedPosition()      { return lastClickedPosition_ ;}
+
 	void setRenderMode(RenderMode rendermode)	{ renderMode_ = rendermode;		}
 	RenderMode getRenderMode() const			{ return renderMode_;			}
 
@@ -31,10 +37,21 @@ public:
 
 	int performObjectSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos, int frameId);
 
+	void updateUIForce(Eigen::Vector3d currPosition, int vertexId, int frameId);
+
+	Eigen::Vector3d getCurrentUIForce()   { return UIForce_;} 
+
+	void resetUIForce();
+
+
+
 protected:
 	TriMesh* mesh_;
 	bool render_;
 	SceneObjectId sceneId_;
 	RenderMode renderMode_;
 	bool rotationInvariant_;
+	int lastClickedVertex_;
+	Eigen::Vector3d lastClickedPosition_;
+	Eigen::Vector3d UIForce_;
 };

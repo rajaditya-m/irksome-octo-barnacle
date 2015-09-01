@@ -262,6 +262,7 @@ void GLWidget::nextFrame()
 		int diff = renderFrame-cloth_frame_available;
 		for(int num = 0; num < diff ; num++)
 			sim_engine_->generate_next_frame();
+		sim_engine_->clothData_->getMesh()->generate_frame_normals(renderFrame);
 	}
 	emit animFrameNumberUpdated(renderFrame);
 	emit frameNumberUpdated((double)renderFrame);
@@ -277,9 +278,6 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
 		double selectedPos[3];
 		getPixelWorldPosition(cur_pos.x(),cur_pos.y(),clickedWorldPos);
 		getSelectionRay(cur_pos.x(),cur_pos.y(),rayStart,rayEnd);
-		//std::cout << "Clicked World Pos:" << clickedWorldPos[0] << " "  << clickedWorldPos[1] << " " << clickedWorldPos[2] << "\n";
-		//std::cout << "Clicked Ray Start:" << rayStart[0] << " "  << rayStart[1] << " " << rayStart[2] << "\n";
-		//std::cout << "Clicked Ray End  :" << rayEnd[0] << " "  << rayEnd[1] << " " << rayEnd[2] << "\n";
 		int vertexClicked = scene_->performSelectionRayTest(rayStart,rayEnd,clickedWorldPos,selectedPos);
 		if(vertexClicked!=-1) {
 			std::cout << "Vertex Clicked :"  << vertexClicked <<  " [" << selectedPos[0] << "," << selectedPos[1] << "," << selectedPos[2] <<   "]\n";
@@ -327,8 +325,42 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 			scene_->setScaling(old_size);
 		}
 	}
+	else if(event->buttons() & Qt::LeftButton) {
+		int lastClickedVertex = scene_->getLastVertexClicked();
+		if(lastClickedVertex!=-1) {
+			double clickedWorldPos[3];
+			getPixelWorldPosition(cur_pos.x(),cur_pos.y(),clickedWorldPos);
+			scene_->updateDraggingForce(clickedWorldPos[0],clickedWorldPos[1],clickedWorldPos[2]);
+			//std::cout << "Vertex Clicked :"  << lastClickedVertex <<  " [" << clickedWorldPos[0] << "," << clickedWorldPos[1] << "," << clickedWorldPos[2] <<   "]\n";
+		}
+		/*QPoint last_pos = scene_->getLastPosition();
+		double clickedWorldPos[3];
+		double lastWorldPosition[3];
+		double rayStart[3], rayEnd[3];
+		double selectedPos[3];
+		getPixelWorldPosition(cur_pos.x(),cur_pos.y(),clickedWorldPos);
+		getPixelWorldPosition(last_pos.x(),last_pos.y(),lastWorldPosition);
+		getSelectionRay(cur_pos.x(),cur_pos.y(),rayStart,rayEnd);
+		int vertexClicked = scene_->performSelectionRayTest(rayStart,rayEnd,clickedWorldPos,selectedPos);
+		if(vertexClicked!=-1) {
+			Eigen::Vector3d diff = Eigen::Map<Eigen::Vector3d>(clickedWorldPos) - Eigen::Map<Eigen::Vector3d>(lastWorldPosition);
+			diff *= 1000.0;
+			std::cout << "Vertex Clicked :"  << vertexClicked <<  " [" << diff[0] << "," << diff[1] << "," << diff[2] <<   "]\n";
+		}*/
+	}
 	updateGL();
 	scene_->setLastPosition(cur_pos);
 }
+
+void GLWidget::mouseReleaseEvent(QMouseEvent* event) {
+	if(event->button() == Qt::LeftButton) {
+		std::cout << "MRL\n";
+		int lastClickedVertex = scene_->getLastVertexClicked();
+		if(lastClickedVertex!=-1) {
+			scene_->resetDraggingForce();
+			//std::cout << "Vertex Clicked :"  << lastClickedVertex <<  " [" << clickedWorldPos[0] << "," << clickedWorldPos[1] << "," << clickedWorldPos[2] <<   "]\n";
+		}
+	}
+} 
 
 

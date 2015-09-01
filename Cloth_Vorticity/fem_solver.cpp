@@ -304,10 +304,15 @@ void FEM_Solver::get_next_velocity_positions(Cloth_Data* cloth)
 	{
 		acceleration_.resize(num_vertices);
 	}
+	int lastVClicked = cloth->getLastClickedVertex();
+	Eigen::Vector3d uiForce = cloth->getCurrentUIForce();
 	OMP_FOR
 	for(int p=0;p<num_vertices;p++)
 	{
 		Eigen::Vector3d tot_force = shear_forces[p]+gravity_forces[p]+bend_forces[p]+dampingForce_[p];
+		if(p==lastVClicked) {
+			tot_force += uiForce;
+		}
 		float vertex_mass = cloth->get_vertex_mass(p);
 		acceleration_[p] = tot_force * (1.0/vertex_mass);
 		Eigen::Vector3d old_pos = cloth->getMesh()->get_point_data(p,last_frame_id);

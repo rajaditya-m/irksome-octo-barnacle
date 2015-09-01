@@ -26,7 +26,7 @@
 	</friction_coeff>
 	
 	<damping_param> 
-		-5.0e-5
+		-5.0e-3
 	</damping_param>
 	
 	<k_bend> 

@@ -29,7 +29,10 @@ public:
 	int getCurrentRenderFrame() const		{ return renderFrame_;		} 
 	bool renderGround() const				{ return renderGround_;		}
 	bool renderAxes() const					{ return renderAxes_;		}
+	int getLastVertexClicked() const { return lastVertexClicked_;}
 
+	
+	//void setLastWorldPosition(Eigen::Vector3d v)  { lastWorldPos_ = v;}
 	void setXRot(int x)						{ xRot_ = x;				}
 	void setYRot(int y)						{ yRot_ = y;				}
 	void setZRot(int z)						{ zRot_ = z;				}
@@ -39,10 +42,14 @@ public:
 	void setRenderGround(bool rg)			{ renderGround_ = rg;		}
 	void setRenderAxes(bool ra)				{ renderAxes_ = ra;			}
 	void setAllRotations(int x, int y, int z);
+	void setLastVertexClicked(int x)   { lastVertexClicked_ = x;}
+
 
 	void addRenderObject(RenderObject* obj);
 
 	int performSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos); 
+	void updateDraggingForce(double x, double y, double z);
+	void resetDraggingForce();
 
 	//Rendering Functions 
 	void renderScene();
@@ -68,6 +75,9 @@ private:
 	int zRot_;
 	float scaling_;
 	QPoint lastPos_;
+	int lastVertexClicked_;
+	int clickedVertexHandle_;
+	Eigen::Vector3d arrowDest_;
 
 	//Vector of Rendering Objects 
 	std::vector<RenderObject*> renderObj_;

@@ -32,6 +32,7 @@ protected:
 
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 
 public slots:
 	void setRenderingFrameNumber(double frame_number);
