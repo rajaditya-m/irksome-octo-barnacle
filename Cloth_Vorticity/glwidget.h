@@ -8,7 +8,7 @@
 #include "global_typedefs.h"
 #include "body_data.h"
 #include "cloth_data.h"
-#include "fem_solver.h"
+#include "ImplicitFEMSolver.h"
 #include "SimulationEngine.h"
 #include "Scene.h"
 #include "CollisionEngine.h"
@@ -64,7 +64,7 @@ signals:
 private:
 	Body_Data *body_information_;
 	Cloth_Data *cloth_information_;
-	FEM_Solver* fem_solver_;
+	ImplicitFEMSolver* fem_solver_;
 	SimulationEngine* sim_engine_;
 	CollisionEngine* collisionEngine_;
 

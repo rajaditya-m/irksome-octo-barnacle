@@ -142,11 +142,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="body_data.cpp" />
+    <ClCompile Include="CGSolver.cpp" />
     <ClCompile Include="cloth_data.cpp" />
     <ClCompile Include="cloth_properties.cpp" />
     <ClCompile Include="cloth_vorticity.cpp" />
     <ClCompile Include="CollisionEngine.cpp" />
     <ClCompile Include="edge.cpp" />
+    <ClCompile Include="EigenHelpers.cpp" />
     <ClCompile Include="fem_solver.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_cloth_vorticity.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -175,12 +177,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="glwidget.cpp" />
+    <ClCompile Include="ImplicitFEMSolver.cpp" />
+    <ClCompile Include="insertRows.cpp" />
+    <ClCompile Include="linearSolver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh_material.cpp" />
     <ClCompile Include="OpenGLHelperFuncs.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SimulationEngine.cpp" />
+    <ClCompile Include="sparseMatrix.cpp" />
     <ClCompile Include="triangles.cpp" />
     <ClCompile Include="triMesh.cpp" />
   </ItemGroup>
@@ -226,6 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="body_data.h" />
+    <ClInclude Include="CGSolver.h" />
     <ClInclude Include="cloth_data.h" />
     <ClInclude Include="cloth_properties.h" />
     <ClInclude Include="CollisionEngine.h" />
@@ -238,11 +245,15 @@
     <ClInclude Include="geom_funcs.h" />
     <ClInclude Include="global_typedefs.h" />
     <ClInclude Include="grid.h" />
+    <ClInclude Include="ImplicitFEMSolver.h" />
+    <ClInclude Include="insertRows.h" />
+    <ClInclude Include="linearSolver.h" />
     <ClInclude Include="math_func.h" />
     <ClInclude Include="mesh_material.h" />
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SimulationEngine.h" />
+    <ClInclude Include="sparseMatrix.h" />
     <ClInclude Include="struct_decls.h" />
     <ClInclude Include="triangles.h" />
     <ClInclude Include="triMesh.h" />

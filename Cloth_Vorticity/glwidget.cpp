@@ -37,7 +37,7 @@ GLWidget::GLWidget(QWidget *parent)
 	std::cout << "[INFO] Cloth Information read successfully.\n";
 
 	//Solver simu lation engine and collision engine data
-	fem_solver_ = new FEM_Solver();
+	fem_solver_ = new ImplicitFEMSolver();
 	collisionEngine_ = new CollisionEngine();
 	sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
 

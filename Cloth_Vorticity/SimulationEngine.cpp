@@ -1,7 +1,7 @@
 #include "SimulationEngine.h"
 
 
-SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,FEM_Solver* solver,Body_Data* body_data)
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitFEMSolver* solver,Body_Data* body_data)
 {
 	clothData_ = cloth_data;
 	solver_ = solver;
@@ -34,11 +34,11 @@ void SimulationEngine::generate_next_frame()
 
 void SimulationEngine::populatePerVertexBuffer()
 {
-	switch(clothData_->getRenderMode())
+	/*switch(clothData_->getRenderMode())
 	{
 		case(HMAP_ACCLRN) : clothData_->setPerVertexVectorBuffer(solver_->getAcceleration()); break;
 		case(HMAP_BENDING_FORCE) : clothData_->setPerVertexVectorBuffer(solver_->getBendingForce()); break;
 		case(HMAP_SHEAR_FORCE) : clothData_->setPerVertexVectorBuffer(solver_->getShearForce()); break;
 		case(HMAP_DAMPING_FORCE) : clothData_->setPerVertexVectorBuffer(solver_->getDampingForce()); break;
-	}
+	}*/
 }

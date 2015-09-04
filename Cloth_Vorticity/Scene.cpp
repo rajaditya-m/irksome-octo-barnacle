@@ -66,8 +66,8 @@ void Scene::renderScene()
 
   if(lastVertexClicked_!=-1) {
     Eigen::Vector3d originArrow = renderObj_[clickedVertexHandle_]->getMesh()->get_point_data(lastVertexClicked_,renderFrame_);
-		//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-	  //glDisable(GL_LIGHTING);
+    //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+    //glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     glColor3f(0.0,0.0,1.0);
     glVertex3d(arrowDest_[0],arrowDest_[1],arrowDest_[2]);
@@ -332,7 +332,7 @@ int Scene::performSelectionRayTest(double* rayStart, double* rayEnd, double *cli
 
 void Scene::updateDraggingForce(double x, double y, double z) {
   Eigen::Vector3d pos(x,y,z);
-	arrowDest_ = pos;
+  arrowDest_ = pos;
   renderObj_[clickedVertexHandle_]->updateUIForce(pos,lastVertexClicked_,renderFrame_);
 }
 

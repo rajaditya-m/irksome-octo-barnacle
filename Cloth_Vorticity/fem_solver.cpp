@@ -281,7 +281,7 @@ void FEM_Solver::computeDampingForce(Cloth_Data* cloth)
 
 		//Implement a simple damping model 
 		float bendC = cloth->get_property_obj()->get_damping_param();
-		Eigen::Vector3d d12 = bendC*(velocityV1-velocityV0);
+		Eigen::Vector3d d12 = bendC*(velocityV1-velocityV2);
 		Eigen::Vector3d d20 = bendC*(velocityV2-velocityV0);
 		Eigen::Vector3d d01 = bendC*(velocityV0-velocityV1);
 
@@ -309,6 +309,7 @@ void FEM_Solver::get_next_velocity_positions(Cloth_Data* cloth)
 	OMP_FOR
 	for(int p=0;p<num_vertices;p++)
 	{
+	  //DBG__Vector_Dump(shear_forces[p],p,"Shear");
 		Eigen::Vector3d tot_force = shear_forces[p]+gravity_forces[p]+bend_forces[p]+dampingForce_[p];
 		if(p==lastVClicked) {
 			tot_force += uiForce;

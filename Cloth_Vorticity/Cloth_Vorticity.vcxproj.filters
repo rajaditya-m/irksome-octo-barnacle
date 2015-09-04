@@ -98,6 +98,24 @@
     <ClCompile Include="OpenGLHelperFuncs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImplicitFEMSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EigenHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sparseMatrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CGSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="linearSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="insertRows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cloth_vorticity.h">
@@ -178,6 +196,21 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="SimulationEngine.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImplicitFEMSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sparseMatrix.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CGSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="linearSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="insertRows.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
