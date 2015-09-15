@@ -1329,6 +1329,23 @@ int SparseMatrix::SaveToMatlabFormat(const char * filename) const
   return 0;
 }
 
+
+Eigen::SparseMatrix<double> SparseMatrix::convertToEigenSparseMatrix()
+{
+  Eigen::SparseMatrix<double> eigSp(numRows,numRows);
+
+  for(int i=0; i<numRows; i++)
+  {
+    for(int j=0; j < rowLength[i]; j++)
+    {
+      int index = columnIndices[i][j]; 
+      double entry = columnEntries[i][j];
+      eigSp.insert(i,index) = entry;
+    }
+  }
+  
+  return eigSp;
+}
 void SparseMatrix::RemoveRowColumn(int index)
 {
   // remove row 'index'

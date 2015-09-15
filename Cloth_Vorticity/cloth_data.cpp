@@ -135,15 +135,48 @@ Cloth_Data::Cloth_Data( const char* name,
 		Eigen::Vector3d xzAxisNorm = Eigen::Vector3d(0.0,1.0,0.0);
 		//Eigen::Matrix4f rotMatrix = compute_rotation_matrix_a_to_b(triNorm,xzAxisNorm);
 
-		float ua = p1.x();
+		/*float ua1 = p1.x();
+		float va1 = p1.z();
+		float ub1 = p2.x();
+		float vb1 = p2.z();
+		float uc1 = p3.x();
+		float vc1 = p3.z();*/
+
+		/*float ua = p1.x();
 		float va = p1.z();
 		float ub = p2.x();
 		float vb = p2.z();
 		float uc = p3.x();
-		float vc = p3.z();
+		float vc = p3.z();*/
 
 
-		//std::cout << "Triangle#" << t << " " << ua << "," << va << "," << ub << "," << vb << "," << uc << "," << vc << "\n";
+		/*float ua = i0_t.x();
+		float va = i0_t.y();
+		float ub = i1_t.x();
+		float vb = i1_t.y();
+		float uc = i2_t.x();
+		float vc = i2_t.y();*/
+
+		Eigen::Vector3d x0 = p1-p2;
+		double lenAB = x0.norm();
+
+		Eigen::Vector3d xn0 = x0.normalized();
+		Eigen::Vector3d x1 = p1-p3;
+		double lenAC = x1.norm();
+
+
+		float ua = 0.0;
+		float va = 0.0;
+		float ub = lenAB;
+		float vb = 0.0;
+		float uc = xn0.dot(x1);
+		float vc = sqrt(lenAC * lenAC - uc * uc);
+
+
+		/*if(t%75==0) {
+			std::cout << "Triangle#" << t << " " << ua << "," << va << "," << ub << "," << vb << "," << uc << "," << vc << "\n";
+			std::cout << "Triangle#" << t << " " << ua1 << "," << va1 << "," << ub1 << "," << vb1 << "," << uc1 << "," << vc1 << "\n";
+		}*/
 
 		Vector7d temp_vertex_distribution;
 

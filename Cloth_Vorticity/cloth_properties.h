@@ -25,6 +25,7 @@ public:
 	float get_damping_param() const				{ return damping_param;			}
 	float get_density() const					{ return density;				}
 	float get_k_bend() const					{ return k_bend;				}
+	float getKStiffness() const { return kStiffness_;}
 
 private:
 	float youngs_modulus;
@@ -36,4 +37,5 @@ private:
 	float damping_param;
 	float k_bend;
 	float density;
+	float kStiffness_;
 };

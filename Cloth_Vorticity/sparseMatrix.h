@@ -29,6 +29,8 @@
 #ifndef _SPARSE_MATRIX_H_
 #define _SPARSE_MATRIX_H_
 
+#include <Eigen\Sparse>
+
 /*
   The "SparseMatrix" class implements double-precision sparse matrices 
   with common algebraic operations such as incremental construction, 
@@ -169,6 +171,8 @@ public:
   void Add3x3Entry(int row, int denseCol, double *value, double scalarMult=1.0);
   void ResetToZero(); // reset all entries to zero
   void ResetRowToZero(int row); // reset all entries in the row to zero
+
+	Eigen::SparseMatrix<double> convertToEigenSparseMatrix();
 
   inline int Getn() const { return numRows; } // get the number of rows
   inline int GetNumRows() const { return numRows; }

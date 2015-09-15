@@ -16,6 +16,7 @@ ClothProperties::ClothProperties(const char* property_xml)
 	damping_param = pt.get<float>("property.damping_param");
 	density = pt.get<float>("property.density");
 	k_bend = pt.get<float>("property.k_bend");
+	kStiffness_ = pt.get<float>("property.k_stiffness");
 
 }
 

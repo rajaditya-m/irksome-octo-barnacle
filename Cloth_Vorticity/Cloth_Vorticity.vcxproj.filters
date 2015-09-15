@@ -116,6 +116,12 @@
     <ClCompile Include="insertRows.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ImplicitMassSpringSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PardisoSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cloth_vorticity.h">
@@ -211,6 +217,15 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="insertRows.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImplicitMassSpringSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PardisoSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sparseSolverAvailability.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
