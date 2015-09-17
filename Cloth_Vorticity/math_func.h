@@ -41,3 +41,10 @@ inline double derivativeSinc(double x) {
 	double res = (cos(x)/x) - (sin(x)/(x*x));
 	return res;
 }
+
+inline double cotTheta(const Eigen::Vector3d v, const Eigen::Vector3d w)
+{
+  const double cosTheta = v.dot(w);
+  const double sinTheta = v.cross(w).norm();
+  return (cosTheta / sinTheta);
+}

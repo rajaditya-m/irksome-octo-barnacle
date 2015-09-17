@@ -17,6 +17,7 @@ class ImplicitMassSpringSolver :
 
 		void initialize(Cloth_Data *cloth);
 		void generateAllSprings(Cloth_Data *cloth);
+		void generateConstantEnergyHessian(Cloth_Data* cloth);
 		void initializeSparseMatrixFromOutline(Cloth_Data *cloth);
 		
 		void resetParameters();
@@ -27,8 +28,7 @@ class ImplicitMassSpringSolver :
 		void addBendingSprings(Cloth_Data* cloth);
 		void addAllSprings(Cloth_Data* cloth); //Use this NOT THE OTHER TWO BECAUSE YOUR FRIGGIN LIFE IS ALREADY COMPLEX ENOUGH WITHOUT TWO FUNCTIONS
 		void addGravityComponents(Cloth_Data* cloth);
-		//void addDampingComponents(Cloth_Data* cloth);
-		//void addBendingComponents(Cloth_Data* cloth);
+		void addQuadraticBending(Cloth_Data* cloth);
 		void finalizeAndSolve(Cloth_Data* cloth);
 
 	private:
@@ -52,5 +52,12 @@ class ImplicitMassSpringSolver :
 		std::vector<std::pair<int,int> > allSprings_;
 		std::vector<double> restLenAllSprings_;
 
+		//This is the constant energy hessian we will need to assemble the forces 
+		SparseMatrix *constantEnergyHessian_;
+		SparseMatrix *mKeQ_;
+		SparseMatrix *mKdQ_;
+		SparseMatrix *mhSquaredKeQ_;
+		SparseMatrix *mhKeQ_;
+		SparseMatrix *mhKdQ_;
 	};
 

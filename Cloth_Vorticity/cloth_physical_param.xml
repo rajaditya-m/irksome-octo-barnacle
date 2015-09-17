@@ -38,7 +38,7 @@
 	</density>
 
   <k_stiffness>
-    1000.0
+    100.0
   </k_stiffness>
 	
 </property>

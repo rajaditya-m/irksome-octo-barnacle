@@ -12,6 +12,12 @@ ImplicitMassSpringSolver::~ImplicitMassSpringSolver(void)
 	{
 	   delete[] massMatrixDiagonal_;
 	   delete LHSMatrix_;
+		 delete constantEnergyHessian_;
+		 delete mKeQ_;
+		 delete mKdQ_;
+		 delete mhSquaredKeQ_;
+		 delete mhKeQ_;
+		 delete mhKdQ_;
      delete[] constrainedVerts_;
 	}
 
@@ -21,6 +27,9 @@ void ImplicitMassSpringSolver::initialize(Cloth_Data *cloth) {
 
 	//Initialize the sparse matrix strructure 
 	initializeSparseMatrixFromOutline(cloth);
+
+	//Initialize the bending hessian matrix 
+	generateConstantEnergyHessian(cloth);
   
   int numVertices = cloth->getMesh()->get_number_vertices();
   massMatrixDiagonal_ = new double[3*numVertices];
@@ -120,11 +129,11 @@ void ImplicitMassSpringSolver::generateAllSprings(Cloth_Data* cloth) {
 	//Add all of them to the single spring vector 
 	allSprings_.reserve(bendingSprings_.size() + stretchSprings_.size());
 	allSprings_.insert(allSprings_.end(),stretchSprings_.begin(),stretchSprings_.end());
-	allSprings_.insert(allSprings_.end(),bendingSprings_.begin(),bendingSprings_.end());
+	//allSprings_.insert(allSprings_.end(),bendingSprings_.begin(),bendingSprings_.end());
 
 	restLenAllSprings_.reserve(restLenbendingSprings_.size() + restLenStretchSprings_.size());
 	restLenAllSprings_.insert(restLenAllSprings_.end(),restLenStretchSprings_.begin(),restLenStretchSprings_.end());
-	restLenAllSprings_.insert(restLenAllSprings_.end(),restLenbendingSprings_.begin(),restLenbendingSprings_.end());
+	//restLenAllSprings_.insert(restLenAllSprings_.end(),restLenbendingSprings_.begin(),restLenbendingSprings_.end());
 
 }
 
@@ -170,6 +179,137 @@ void ImplicitMassSpringSolver::initializeSparseMatrixFromOutline(Cloth_Data *clo
   LHSMatrix_->BuildDiagonalIndices();
 }
 
+void ImplicitMassSpringSolver::generateConstantEnergyHessian(Cloth_Data *cloth) {
+	int numVertices = cloth->getMesh()->get_number_vertices();
+  int numTriangles = cloth->getMesh()->get_number_triangles();
+	std::vector<Edge> edgeVector = cloth->getMesh()->getEdgeVector();
+	int numEdges = cloth->getMesh()->getEdgeVectorSize();
+
+  SparseMatrixOutline *spMatOutline = new SparseMatrixOutline(numVertices*3);
+
+	double *fakeIdentity = new double[9];
+  memset(fakeIdentity,0,sizeof(double)*9);
+	double ke = 0.1;//cloth->get_property_obj()->getKStiffness();
+	double kd = 0.001;//cloth->get_property_obj()->get_damping_param();
+	double h = cloth->get_property_obj()->get_timestep();
+
+	for(int i=0;i<numEdges;i++) {
+
+		Edge curEdge = edgeVector[i];
+
+		int i0 = curEdge.start;
+		int i1 = curEdge.end;
+
+		//Check if this qualifies as a bending edge candidate
+		int adjTri1 = curEdge.get_tri_1();
+		int adjTri2 = curEdge.get_tri_2();
+		if(adjTri1 != -1 && adjTri2 != -1) {
+
+			//Get the oppsing edges 
+			Triangles t1 = cloth->getMesh()->get_triangle(adjTri1);
+			Triangles t2 = cloth->getMesh()->get_triangle(adjTri2);
+
+			std::vector<int> v1;
+			v1.push_back(t1.a);
+			v1.push_back(t1.b);
+			v1.push_back(t1.c);
+
+			std::vector<int> v2;
+			v2.push_back(t2.a);
+			v2.push_back(t2.b);
+			v2.push_back(t2.c);
+
+			std::sort(v1.begin(),v1.end());
+			std::sort(v2.begin(),v2.end());
+			
+			int i2;
+			int i3;
+
+			if(v1[0]==i0 && v1[1]==i1) {
+				i2 = v1[2];
+			} else if(v1[1]==i0 && v1[2]==i1) {
+				i2 = v1[0];
+			} else if(v1[0]==i0 && v1[2]==i1) {
+				i2 = v1[1];
+			} else {
+				std::cout << "[ERROR] This should never be reached\n";
+			}
+
+			if(v2[0]==i0 && v2[1]==i1) {
+				i3 = v2[2];
+			} else if(v2[1]==i0 && v2[2]==i1) {
+				i3 = v2[0];
+			} else if(v2[0]==i0 && v2[2]==i1) {
+				i3 = v2[1];
+			} else {
+				std::cout << "[ERROR] This should never be reached\n";
+			}
+
+			//All the vertices are ready 
+			Eigen::Vector3d x0 = cloth->getMesh()->get_point_data(i0);
+			Eigen::Vector3d x1 = cloth->getMesh()->get_point_data(i1);
+			Eigen::Vector3d x2 = cloth->getMesh()->get_point_data(i2);
+			Eigen::Vector3d x3 = cloth->getMesh()->get_point_data(i3);
+
+			Eigen::Vector3d e0 = x1-x0;
+			Eigen::Vector3d e1 = x2-x0;
+			Eigen::Vector3d e2 = x3-x0;
+			Eigen::Vector3d e3 = x2-x1;
+			Eigen::Vector3d e4 = x3-x1;
+
+			double c01 = cotTheta( e0, e1);
+			double c02 = cotTheta( e0, e2);
+			double c03 = cotTheta(-e0, e3);
+			double c04 = cotTheta(-e0, e4);
+
+			double K0[] = {c03+c04, c01+c02, -c01-c03, -c02-c04};
+
+			double A0 = 0.5 * (e0.cross(e1)).norm();
+			double A1 = 0.5 * (e0.cross(e2)).norm();
+
+			double coef = -3. / (2.*(A0+A1));
+		
+			double Q[4][4];
+
+			for (int i=0; i<4; ++i) {
+				for (int j=0; j<i; ++j) {
+					Q[i][j] = Q[j][i] = coef * K0[i] * K0[j];
+				}
+				Q[i][i] = coef * K0[i] * K0[i];
+			}
+
+			//Now we will add them as index matrices to the result
+			int idx[] = {i0,i1,i2,i3};
+			for(int i=0;i<4;i++) {
+				for(int j=0;j<4;j++) {
+					fakeIdentity[0] = fakeIdentity[4] = fakeIdentity[8] = Q[i][j];
+					spMatOutline->AddBlock3x3Entry(idx[i],idx[j],fakeIdentity);
+				}
+			}
+		}
+	}
+
+	//Create the actual SparseMatrix 
+	constantEnergyHessian_ = new SparseMatrix(spMatOutline);
+
+	//create its miniions 
+	
+	SparseMatrix temp = ke*(*constantEnergyHessian_);
+	mKeQ_ = new SparseMatrix(temp);
+	temp = kd*(*constantEnergyHessian_);
+	mKdQ_ = new SparseMatrix(temp);
+	temp = ke*(-h)*h*(*constantEnergyHessian_);
+	mhSquaredKeQ_ = new SparseMatrix(temp);
+	temp = ke*h*(*constantEnergyHessian_);
+	mhKeQ_ = new SparseMatrix(temp);
+	temp = kd*(-h)*(*constantEnergyHessian_);
+	mhKdQ_ = new SparseMatrix(temp);
+
+	//Delete the residuals
+	delete (spMatOutline);
+  delete[] fakeIdentity;
+}
+
 void ImplicitMassSpringSolver::advance_time_step(Cloth_Data* cloth) {
 	//Set the last frame information
   lastFrameId_ = (cloth->getMesh()->get_number_frames()) - 1;
@@ -185,6 +325,7 @@ void ImplicitMassSpringSolver::advance_time_step(Cloth_Data* cloth) {
 
   //Add the physics components
 	addAllSprings(cloth);
+	addQuadraticBending(cloth);
   addGravityComponents(cloth);
 
   //Solve and report
@@ -499,6 +640,48 @@ void ImplicitMassSpringSolver::addAllSprings(Cloth_Data *cloth) {
 
 }
 
+void ImplicitMassSpringSolver::addQuadraticBending(Cloth_Data *cloth) {
+	// Assemble the force and velocity 
+  int numVertices = cloth->getMesh()->get_number_vertices();
+	double *x = new double[numVertices*3];
+	double *v = new double[numVertices*3];
+	std::vector<Eigen::Vector3d> posVec = cloth->getMesh()->getPositionVector(lastFrameId_);
+	memcpy(x,&posVec[0],sizeof(double)*3*numVertices);
+	std::vector<Eigen::Vector3d> velVec = cloth->get_velocity_vector();
+	memcpy(v,&velVec[0],sizeof(double)*3*numVertices);
+	
+	//Find the elastic force and add it to LHS 
+	double *fe = new double[numVertices*3];
+	mKeQ_->MultiplyVector(x,fe);
+	Eigen::Map<Eigen::VectorXd> fe_Map(fe,numVertices*3);
+	RHSVector_ += fe_Map;
+	
+	//Find the elastic jacobian and add it to LHS
+	(*LHSMatrix_) += (*mhSquaredKeQ_);
+
+	//Find the product of velocity*h*df/dx 
+	double *pdk = new double[numVertices*3];
+	mhKeQ_->MultiplyVector(v,pdk);
+	Eigen::Map<Eigen::VectorXd> pdk_Map(pdk,numVertices*3);
+	RHSVector_ += pdk_Map;
+
+	//Find the damping force and add it to the system
+	double *fd = new double[numVertices*3];
+	mKdQ_->MultiplyVector(v,fd);
+	Eigen::Map<Eigen::VectorXd> fd_Map(fd,numVertices*3);
+	RHSVector_ += fd_Map;
+
+	//Add the damping jacobian to the  LHS mAtrix 
+	(*LHSMatrix_) += (*mhKdQ_);
+
+	//Delete this stuff 
+	delete[] x;
+	delete[] v;
+	delete[] fe;
+	delete[] pdk;
+	delete[] fd;
+}
+
 void ImplicitMassSpringSolver::finalizeAndSolve(Cloth_Data* cloth)  {
 	float time_step = cloth->get_property_obj()->get_timestep();
   int num_vertices = cloth->getMesh()->get_number_vertices();
@@ -531,33 +714,9 @@ void ImplicitMassSpringSolver::finalizeAndSolve(Cloth_Data* cloth)  {
   memset(resultConstrained,0,sizeof(double)*numConstrainedDOFs);
 
 	if(USECONJUGATEGRADIENTSOLVER) {
-		 //tempSpMatCopy->SaveToMatlabFormat("A.mat");
-		 //DBG__Save_To_File(numConstrainedDOFs,rhsConstrained,"b.mat");
-		 //DBG__Save_To_File(num_vertices*3,RHSVector_.data(),"rhs.mat");
-		 /*CGSolver solver(tempSpMatCopy);
-		 double eps = 1E-8;
-		 int maxIter = 1000;
-		 int verbose = 1; 
-		 int code = solver.SolveLinearSystemWithJacobiPreconditioner(resultConstrained, rhsConstrained, eps, maxIter, verbose); // do the CG solve
-		 //int code = solver.SolveLinearSystemWithJacobiPreconditioner(delV, RHSVector_.data(), eps, maxIter, verbose); // do the CG solve
-		 std::cout << "#Iterations:" << code << "\n";
-		 tempSpMatCopy->CheckLinearSystemSolution(resultConstrained,rhsConstrained);*/
-
-		 /*Eigen::SparseMatrix<double> spm = tempSpMatCopy->convertToEigenSparseMatrix();
-		 Eigen::VectorXd rhseig(numConstrainedDOFs);
-		 memcpy(rhseig.data(),rhsConstrained,sizeof(double)*numConstrainedDOFs);
-		 Eigen::ConjugateGradient<Eigen::SparseMatrix<double> > cgsolver;
-		 cgsolver.compute(spm);
-		 Eigen::VectorXd x = cgsolver.solve(rhseig);
-		 memcpy(resultConstrained,x.data(),sizeof(double)*numConstrainedDOFs);
-		 std::cout << "#iterations:" << cgsolver.iterations() << "\n";
-		 std::cout << "#error:" << cgsolver.error() << "\n";*/
-
 		 PardisoSolver solver(tempSpMatCopy,7,0,0,0);
 		 solver.ComputeCholeskyDecomposition(tempSpMatCopy);
 		 int retVal = solver.SolveLinearSystem(resultConstrained,rhsConstrained);
-
-
 	}
 	else {
 		//Solve this using the Gauss Seidel Iterations
@@ -574,15 +733,6 @@ void ImplicitMassSpringSolver::finalizeAndSolve(Cloth_Data* cloth)  {
   delete(tempSpMatCopy);
   delete[] rhsConstrained;
   delete[] resultConstrained;
-
-  /*double *delV = new double[num_vertices*3];
-  memset(delV,0,sizeof(double)*(num_vertices*3));
-  CGSolver solver(LHSMatrix_);
-  double eps = 1E-5;
-  int maxIter = 1000;
-  int verbose = 0; 
-  int code = solver.SolveLinearSystemWithJacobiPreconditioner(delV, RHSVector_.data(), eps, maxIter, verbose); // do the CG solve
-  std::cout << "#Iterations:" << code << "\n";*/
 
   //For now just leapfrog this one 
   OMP_FOR
@@ -607,3 +757,4 @@ void ImplicitMassSpringSolver::resetParameters() {
   RHSVector_.setZero();
   LHSMatrix_->ResetToZero();
 }
+

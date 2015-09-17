@@ -33,7 +33,7 @@ int RenderObject::performObjectSelectionRayTest(double* rayStart, double* rayEnd
 void RenderObject::updateUIForce(Eigen::Vector3d currPosition, int vertexId, int frameId) {
 	Eigen::Vector3d origin = mesh_->get_point_data(vertexId,frameId);
 	Eigen::Vector3d diff = currPosition-origin;
-	double compliance = 0.1;
+	double compliance = 1.0;
 	diff *= compliance;
 	UIForce_ = diff;
 	std::cout << "Vertex Clicked: " << vertexId << " [" << diff[0] << "," << diff[1] << "," << diff[2] << "]\n";

@@ -68,6 +68,7 @@ public:
 	float get_longest_edge_length()	const								{ return longest_edge_length_;			}
 	Pair_Vec3d& get_super_bounding_box()								{ return super_bounding_box;			}
 	std::string getMeshName() const										{ return name_;							}
+	std::vector<Eigen::Vector3d>& getPositionVector(int frameId) { return point_data[frameId];}
 
 	//Accessor functions for this class 
 	Triangles get_triangle(int tri_idx)	const							{ return mesh_data[tri_idx];			}
