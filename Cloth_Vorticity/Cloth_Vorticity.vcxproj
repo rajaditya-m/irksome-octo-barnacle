@@ -129,14 +129,14 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\Math Library\boost_libs\boost_1_59_0;$(ProjectDir)\..\..\Math Library\Eigen_Lin_Alg;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtOpenGL;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <Optimization>Full</Optimization>
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Intel\Composer XE 2015\mkl\lib\intel64;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Dropbox\Programs\Research_Code_Windows\Math Library\boost_libs\boost_1_59_0\bin.v2\libs\system\build\msvc-11.0\release\address-model-64\link-static\threading-multi;C:\Program Files %28x86%29\Intel\Composer XE 2015\mkl\lib\intel64;D:\Dropbox\Programs\Research_Code_Windows\Math Library\boost_libs\boost_1_59_0\bin.v2\libs\filesystem\build\msvc-11.0\release\address-model-64\link-static\threading-multi;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5OpenGL.lib;opengl32.lib;glu32.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

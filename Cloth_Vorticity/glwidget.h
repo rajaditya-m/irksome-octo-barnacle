@@ -56,6 +56,9 @@ public slots:
 	void setClothRenderInHeatmapBendingForce(bool checked);
 	void setClothRenderInHeatmapDampingForce(bool checked);
 	void setClothRenderInHeatmapShearForce(bool checked);
+	void setSaveAsOBJCloth() ;
+	void setSaveAsOBJBody();
+	void setSaveAsOBJAll();
 signals:
 	void frameNumberUpdated(double frame_nos);
 	void frameNumberUpdated(int frame_nos);

@@ -26,6 +26,9 @@ public:
 	float get_density() const					{ return density;				}
 	float get_k_bend() const					{ return k_bend;				}
 	float getKStiffness() const { return kStiffness_;}
+	float getQuadBendStiffness() const { return qBStiffness_;}
+	float getQuadBendDamping()  const { return qBDamping_;}
+	std::string getDataDumpLoc() const { return dataDumpLocation_;}
 
 private:
 	float youngs_modulus;
@@ -38,4 +41,7 @@ private:
 	float k_bend;
 	float density;
 	float kStiffness_;
+	std::string dataDumpLocation_;
+	float qBStiffness_;
+	float qBDamping_;
 };

@@ -9,6 +9,9 @@
 #include <gl/glu.h>
 #include <math.h>
 #include <vector>
+#include <chrono>
+#include <boost\filesystem.hpp>
+#include <boost\algorithm\string.hpp>
 #include "RenderObject.h"
 
 
@@ -50,6 +53,9 @@ public:
 	int performSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos); 
 	void updateDraggingForce(double x, double y, double z);
 	void resetDraggingForce();
+
+	//Save as functions 
+	void saveObjs(int code);
 
 	//Rendering Functions 
 	void renderScene();
@@ -104,5 +110,10 @@ private:
 	//Some generic boolean flipping 
 	bool renderAxes_;
 	bool renderGround_;
+
+	//Some more saving information 
+	std::string clothPrefix_;
+	std::string bodyPrefix_;
+	bool dirsCreated_;
 };
 

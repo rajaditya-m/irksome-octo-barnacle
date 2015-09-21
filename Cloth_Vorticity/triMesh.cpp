@@ -1509,3 +1509,30 @@ int TriMesh::performMeshSelectionRayTest(double* rayStart, double* rayEnd, doubl
 
 
 }
+
+void TriMesh::saveFrameAsObj(const char* filePrefix, int frameID) {
+	std::stringstream ss;
+	ss << filePrefix << "\\mesh_" << frameID << ".obj";
+	std::string s = ss.str();
+	std::cout << "Writing OBJ FILE to " << s.c_str() << "\n";
+	std::ofstream fileOut(s.c_str());
+	for(int p=0;p<point_data[frameID].size();p++) {
+		fileOut << "v " << point_data[frameID][p][0] << " " << point_data[frameID][p][1] << " " << point_data[frameID][p][2] << "\n";
+	}
+	for(int t=0;t<mesh_data.size();t++) {
+		fileOut << "f " << (mesh_data[t].a)+1 << " " << (mesh_data[t].b)+1 << " " << (mesh_data[t].c)+1 << "\n";
+	}
+	fileOut.close();
+
+}
+
+void TriMesh::saveAsOBJ(const char* filePrefix) {
+	if(static_) {
+		saveFrameAsObj(filePrefix,0);
+	}
+	else {
+		for(int i=0;i<point_data.size();i++) {
+			saveFrameAsObj(filePrefix,i);
+		}
+	}
+}

@@ -40,5 +40,18 @@
   <k_stiffness>
     100.0
   </k_stiffness>
+
+  <quad_damping>
+    0.0
+  </quad_damping>
+
+  <quad_stiffness>
+    0.001
+  </quad_stiffness>
+
+  <data_dump_location>
+    F:\\Cloth_Sim_Data
+  </data_dump_location>
+  
 	
 </property>

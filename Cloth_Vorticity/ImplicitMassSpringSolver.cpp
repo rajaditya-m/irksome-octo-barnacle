@@ -189,8 +189,8 @@ void ImplicitMassSpringSolver::generateConstantEnergyHessian(Cloth_Data *cloth) 
 
 	double *fakeIdentity = new double[9];
   memset(fakeIdentity,0,sizeof(double)*9);
-	double ke = 0.1;//cloth->get_property_obj()->getKStiffness();
-	double kd = 0.001;//cloth->get_property_obj()->get_damping_param();
+	double ke = cloth->get_property_obj()->getQuadBendStiffness();
+	double kd = cloth->get_property_obj()->getQuadBendDamping();
 	double h = cloth->get_property_obj()->get_timestep();
 
 	for(int i=0;i<numEdges;i++) {

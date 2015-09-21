@@ -17,6 +17,9 @@ ClothProperties::ClothProperties(const char* property_xml)
 	density = pt.get<float>("property.density");
 	k_bend = pt.get<float>("property.k_bend");
 	kStiffness_ = pt.get<float>("property.k_stiffness");
+	qBDamping_ = pt.get<float>("property.quad_damping");
+	qBStiffness_ = pt.get<float>("property.quad_stiffness");
+	dataDumpLocation_ = pt.get<std::string>("property.data_dump_location");
 
 }
 

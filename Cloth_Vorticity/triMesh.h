@@ -96,6 +96,8 @@ public:
 	void add_frame_data(std::vector<Eigen::Vector3d> &vec);
 	void resetMeshDefaults();
 	int performMeshSelectionRayTest(double* rayStart, double* rayEnd, double *clickedWorldPos, double* selectedPos, int frameId);
+	void saveFrameAsObj(const char* fileSuffix, int frameID);
+	void saveAsOBJ(const char* fileSuffix);
 
 	//Drawing Functions 
 	void draw_mesh(int idx);

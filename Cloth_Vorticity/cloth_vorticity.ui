@@ -122,10 +122,25 @@
     <addaction name="actionPause"/>
     <addaction name="actionReset"/>
    </widget>
+   <widget class="QMenu" name="menuActions">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+    <widget class="QMenu" name="menuSave_As_OBJ">
+     <property name="title">
+      <string>Save As OBJ</string>
+     </property>
+     <addaction name="actionSave_Cloth"/>
+     <addaction name="actionBody"/>
+     <addaction name="actionAll"/>
+    </widget>
+    <addaction name="menuSave_As_OBJ"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuRender"/>
    <addaction name="menuAnimation"/>
+   <addaction name="menuActions"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -272,6 +287,21 @@
   <action name="actionReset">
    <property name="text">
     <string>Reset </string>
+   </property>
+  </action>
+  <action name="actionSave_Cloth">
+   <property name="text">
+    <string>Cloth</string>
+   </property>
+  </action>
+  <action name="actionBody">
+   <property name="text">
+    <string>Body</string>
+   </property>
+  </action>
+  <action name="actionAll">
+   <property name="text">
+    <string>All</string>
    </property>
   </action>
  </widget>

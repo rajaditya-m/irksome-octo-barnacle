@@ -78,6 +78,15 @@ public:
 		//This is for reset
 		QObject::connect(parent.actionReset, SIGNAL(triggered()), parent.widget, SLOT(resetAnimation()));
 
+		//This is for the save option (cloth)
+		QObject::connect(parent.actionSave_Cloth, SIGNAL(triggered()), parent.widget, SLOT(setSaveAsOBJCloth()));
+
+		//This is for the save option (body)
+		QObject::connect(parent.actionBody, SIGNAL(triggered()), parent.widget, SLOT(setSaveAsOBJBody()));
+
+		//This is for the save option (all)
+		QObject::connect(parent.actionAll, SIGNAL(triggered()), parent.widget, SLOT(setSaveAsOBJAll()));
+
 	}
 };
 

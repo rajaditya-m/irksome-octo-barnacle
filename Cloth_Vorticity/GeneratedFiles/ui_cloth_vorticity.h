@@ -53,6 +53,9 @@ public:
     QAction *actionHeatmap_Bending_Force;
     QAction *actionHeatmap_Damping_Force;
     QAction *actionReset;
+    QAction *actionSave_Cloth;
+    QAction *actionBody;
+    QAction *actionAll;
     QWidget *centralWidget;
     GLWidget *widget;
     QSlider *horizontalSlider;
@@ -63,6 +66,8 @@ public:
     QMenu *menuRender;
     QMenu *menuHeatMap_Cloth;
     QMenu *menuAnimation;
+    QMenu *menuActions;
+    QMenu *menuSave_As_OBJ;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -125,6 +130,12 @@ public:
         actionHeatmap_Damping_Force->setObjectName(QStringLiteral("actionHeatmap_Damping_Force"));
         actionReset = new QAction(Cloth_VorticityClass);
         actionReset->setObjectName(QStringLiteral("actionReset"));
+        actionSave_Cloth = new QAction(Cloth_VorticityClass);
+        actionSave_Cloth->setObjectName(QStringLiteral("actionSave_Cloth"));
+        actionBody = new QAction(Cloth_VorticityClass);
+        actionBody->setObjectName(QStringLiteral("actionBody"));
+        actionAll = new QAction(Cloth_VorticityClass);
+        actionAll->setObjectName(QStringLiteral("actionAll"));
         centralWidget = new QWidget(Cloth_VorticityClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         widget = new GLWidget(centralWidget);
@@ -157,6 +168,10 @@ public:
         menuHeatMap_Cloth->setObjectName(QStringLiteral("menuHeatMap_Cloth"));
         menuAnimation = new QMenu(menuBar);
         menuAnimation->setObjectName(QStringLiteral("menuAnimation"));
+        menuActions = new QMenu(menuBar);
+        menuActions->setObjectName(QStringLiteral("menuActions"));
+        menuSave_As_OBJ = new QMenu(menuActions);
+        menuSave_As_OBJ->setObjectName(QStringLiteral("menuSave_As_OBJ"));
         Cloth_VorticityClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(Cloth_VorticityClass);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -169,6 +184,7 @@ public:
         menuBar->addAction(menuView->menuAction());
         menuBar->addAction(menuRender->menuAction());
         menuBar->addAction(menuAnimation->menuAction());
+        menuBar->addAction(menuActions->menuAction());
         menuRender->addAction(actionShow_Body);
         menuRender->addAction(actionShow_Clothing);
         menuRender->addSeparator();
@@ -191,6 +207,10 @@ public:
         menuAnimation->addAction(actionPlay);
         menuAnimation->addAction(actionPause);
         menuAnimation->addAction(actionReset);
+        menuActions->addAction(menuSave_As_OBJ->menuAction());
+        menuSave_As_OBJ->addAction(actionSave_Cloth);
+        menuSave_As_OBJ->addAction(actionBody);
+        menuSave_As_OBJ->addAction(actionAll);
 
         retranslateUi(Cloth_VorticityClass);
         QObject::connect(doubleSpinBox, SIGNAL(valueChanged(double)), widget, SLOT(setRenderingFrameNumber(double)));
@@ -229,11 +249,16 @@ public:
         actionHeatmap_Bending_Force->setText(QApplication::translate("Cloth_VorticityClass", "Heatmap - Bending Force", 0));
         actionHeatmap_Damping_Force->setText(QApplication::translate("Cloth_VorticityClass", "Heatmap - Damping Force", 0));
         actionReset->setText(QApplication::translate("Cloth_VorticityClass", "Reset ", 0));
+        actionSave_Cloth->setText(QApplication::translate("Cloth_VorticityClass", "Cloth", 0));
+        actionBody->setText(QApplication::translate("Cloth_VorticityClass", "Body", 0));
+        actionAll->setText(QApplication::translate("Cloth_VorticityClass", "All", 0));
         menuFile->setTitle(QApplication::translate("Cloth_VorticityClass", "File", 0));
         menuView->setTitle(QApplication::translate("Cloth_VorticityClass", "View", 0));
         menuRender->setTitle(QApplication::translate("Cloth_VorticityClass", "Render", 0));
         menuHeatMap_Cloth->setTitle(QApplication::translate("Cloth_VorticityClass", "Cloth Rendering", 0));
         menuAnimation->setTitle(QApplication::translate("Cloth_VorticityClass", "Animation", 0));
+        menuActions->setTitle(QApplication::translate("Cloth_VorticityClass", "Actions", 0));
+        menuSave_As_OBJ->setTitle(QApplication::translate("Cloth_VorticityClass", "Save As OBJ", 0));
     } // retranslateUi
 
 };

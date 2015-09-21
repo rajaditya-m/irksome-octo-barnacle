@@ -26,6 +26,25 @@ Scene::Scene(void)
 
   lastVertexClicked_ = -1;
   clickedVertexHandle_ = 0;
+
+	//Some more information
+	const char* suffix = "F:\\Cloth_Sim_Data";
+	//Get the current date and time also and create a folder 
+	std::chrono::time_point<std::chrono::system_clock> timeNow;
+	timeNow = std::chrono::system_clock::now();
+	std::time_t timeNowT = std::chrono::system_clock::to_time_t(timeNow);
+	const char* timeStr = std::ctime(&timeNowT);
+	std::string timeS(timeStr);
+	boost::replace_all(timeS," ","_");
+	boost::replace_all(timeS,":","_");
+	boost::trim(timeS);
+	std::stringstream ssc;
+	ssc << suffix << "\\" << timeS << "\\Cloth";
+	clothPrefix_ = ssc.str();
+	std::stringstream ssb;
+	ssb << suffix << "\\" << timeS << "\\Body";
+	bodyPrefix_ = ssb.str();
+	dirsCreated_ = false;
 }
 
 
@@ -340,4 +359,29 @@ void Scene::resetDraggingForce() {
   renderObj_[clickedVertexHandle_]->resetUIForce();
   lastVertexClicked_ = -1;
   clickedVertexHandle_ = -1;
+}
+
+void Scene::saveObjs(int code) {
+	//These codes are internally implemented 
+	// 0 - all 1 - cloth 2 - body
+	if(!dirsCreated_) {
+		boost::filesystem::create_directories(clothPrefix_.c_str());
+		boost::filesystem::create_directories(bodyPrefix_.c_str());
+		dirsCreated_ = true;
+	}
+
+	std::vector<RenderObject*>::iterator it;
+  for(it = renderObj_.begin(); it!= renderObj_.end(); ++it) {
+		SceneObjectId scId = (*it)->getSceneObjectId();
+		if(code==0) {
+			if(scId==COLL_OBJ)
+				(*it)->getMesh()->saveAsOBJ(bodyPrefix_.c_str());
+			else
+				(*it)->getMesh()->saveAsOBJ(clothPrefix_.c_str());
+		} else if(code==1 && scId==CLOTH) {
+			(*it)->getMesh()->saveAsOBJ(clothPrefix_.c_str());
+		} else if(code==2 && scId==COLL_OBJ) {
+			(*it)->getMesh()->saveAsOBJ(bodyPrefix_.c_str());
+		}
+	}
 }

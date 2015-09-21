@@ -363,4 +363,17 @@ void GLWidget::mouseReleaseEvent(QMouseEvent* event) {
 	}
 } 
 
+void GLWidget::setSaveAsOBJCloth() {
+	scene_->saveObjs(1);
+}
+
+void GLWidget::setSaveAsOBJBody() {
+	scene_->saveObjs(2);
+}
+
+void GLWidget::setSaveAsOBJAll() {
+	scene_->saveObjs(0);
+}
+
+
 
