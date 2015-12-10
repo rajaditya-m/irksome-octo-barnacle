@@ -27,7 +27,7 @@ inline Eigen::Vector2f compute_outward_normal(Eigen::Vector2f a, Eigen::Vector2f
 	return N;
 }
 
-inline Eigen::Vector3d compute_triangle_normal(Eigen::Vector3d a,Eigen::Vector3d b,Eigen::Vector3d c)
+inline Eigen::Vector3d computeTriangleNormals(Eigen::Vector3d a,Eigen::Vector3d b,Eigen::Vector3d c)
 {
 	Eigen::Vector3d ab = b-a;
 	Eigen::Vector3d ac = c-a;
@@ -60,9 +60,11 @@ inline Eigen::Matrix3d compute_rotation_matrix_a_to_b(Eigen::Vector3d norm_in_a,
 	rot_mat(0,0) = x*x*C+c;
 	rot_mat(0,1) = x*y*C-z*s;
 	rot_mat(0,2) = x*z*C+y*s;
+
 	rot_mat(1,0) = y*x*C+z*s;
 	rot_mat(1,1) = y*y*C+c;
 	rot_mat(1,2) = y*z*C-x*s;
+
 	rot_mat(2,0) = z*x*C-y*s;
 	rot_mat(2,1) = z*y*C+x*s;
 	rot_mat(2,2) = z*z*C+c;
@@ -136,38 +138,3 @@ inline double pointLineDistance(double *p0, double *p1, double *p, double* lengt
 	distance = std::sqrt((vec2Norm*vec2Norm) - (projectionLength*projectionLength));
 	return distance;
 }
-
-
-/*
-inline Eigen::Matrix3d compute_rotation_matrix_a_to_b(Eigen::Vector3d norm_in_a,Eigen::Vector3d norm_in_b)
-{
-	norm_in_a.normalize();
-	norm_in_b.normalize();
-
-	Eigen::Vector3d unit_axis = norm_in_a.cross(norm_in_b);
-	float len = unit_axis.norm();
-	if(fabs(len) < 1.0e-14)
-	{
-		Eigen::Matrix3d identity = Eigen::Matrix3d::Identity();
-		return identity;
-	}
-	unit_axis.normalized();
-
-	Vector3d v2 = cross(v0,v1);
-			if (v2.length()<1e-20)	// TODO
-			{
-				//std::cout<<"("<<v2.x<<","<<v2.y<<","<<v2.z<<") ";
-				Matrix3d id;
-				id.identity();
-				return id;				
-			}
-			v2.normalize();
-
-
-
-			Matrix3d U(v0,v2,cross(v0,v2));
-			Matrix3d V(v1,v2,cross(v1,v2));
-			V.transpose();
-			return V*U;
-}
-*/

@@ -48,3 +48,4 @@ inline double cotTheta(const Eigen::Vector3d v, const Eigen::Vector3d w)
   const double sinTheta = v.cross(w).norm();
   return (cosTheta / sinTheta);
 }
+ 

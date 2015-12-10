@@ -40,6 +40,10 @@ public:
 	float get_vertex_mass(int idx)									{ return vertex_mass[idx];				}
 	Eigen::Vector3d get_velocity(int idx)							{ return velocity[idx];					}
 	std::vector<Eigen::Vector3d>& get_velocity_vector()				{ return velocity;						}
+	Eigen::Vector2d getEdgeWeightedTriangleNormals(int t,int i) { return edgeWeightedTriangleNormals_[3*t+i];}
+
+	Eigen::Matrix2d& getDmInv(int tidx) { return Dm_[tidx];}
+	double getW(int tidx) { return W_[tidx];}
 
 	TriMesh* getMesh()          { return mesh_;}
 
@@ -69,6 +73,10 @@ private:
 	//this contains the buffers that contain the next positions and velocities 
 	std::vector<Eigen::Vector3d> next_step_velocity;
 	std::vector<Eigen::Vector3d> next_step_position;
+
+	std::vector<Eigen::Matrix2d> Dm_;
+	std::vector<double> W_;
+	std::vector<Eigen::Vector2d> edgeWeightedTriangleNormals_;
 
 	//Additional Rendering Buffer (will be populated by SIM ENGINE)
 	std::vector<Eigen::Vector3d> perVertexVectorBuffer_;

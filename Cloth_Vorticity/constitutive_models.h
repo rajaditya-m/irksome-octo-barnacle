@@ -25,6 +25,7 @@ inline Eigen::Matrix2f corotational_elasticity(Eigen::Matrix2f &m,float lame_par
 
 }
 
+
 inline Eigen::Matrix2f linear_elasticity(Eigen::Matrix2f &m, float lame_param_lambda,float lame_param_mu)
 {
 	Eigen::Matrix2f I = Eigen::Matrix2f::Identity();
@@ -44,4 +45,22 @@ inline Eigen::Matrix3d isotropic_linear_elasticity(float ym,float poisson)
 	//std::cout << E << "\n";
 	return E;
 
+}
+
+inline Eigen::MatrixXd genericPolarDecomposition(Eigen::MatrixXd J)
+{
+	Eigen::MatrixXd U_Squared = J.transpose()*J;
+	Eigen::EigenSolver<Eigen::MatrixXd> es(U_Squared);
+
+	double lambda1 = es.eigenvalues()[0].real();
+	double lambda2 = es.eigenvalues()[1].real();
+	
+	Eigen::VectorXd v1 = es.eigenvectors().col(0).real();
+	Eigen::VectorXd v2 = es.eigenvectors().col(1).real();
+
+	Eigen::MatrixXd U = std::sqrt(lambda1)*v1*v1.transpose() + std::sqrt(lambda2)*v2*v2.transpose();
+	Eigen::MatrixXd U_Inv = U.inverse();
+	Eigen::MatrixXd R  =J * U_Inv;
+
+	return R;
 }

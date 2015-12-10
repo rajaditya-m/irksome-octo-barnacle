@@ -1,7 +1,23 @@
 #include "SimulationEngine.h"
 
 
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitFEMSolver* solver,Body_Data* body_data)
+{
+	clothData_ = cloth_data;
+	solver_ = solver;
+	solver_->initialize(clothData_);
+	bodyData_ = body_data;
+}
+
 SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitMassSpringSolver* solver,Body_Data* body_data)
+{
+	clothData_ = cloth_data;
+	solver_ = solver;
+	solver_->initialize(clothData_);
+	bodyData_ = body_data;
+}
+
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitHyperElasticFEMSolver* solver,Body_Data* body_data)
 {
 	clothData_ = cloth_data;
 	solver_ = solver;

@@ -1,6 +1,8 @@
 #include "glwidget.h"
 #include "OpenGLHelperFuncs.cpp"
 
+#define USE_FEM 1
+
 //Using stuff in Clothing_3 before
 
 GLWidget::GLWidget(QWidget *parent)
@@ -37,10 +39,22 @@ GLWidget::GLWidget(QWidget *parent)
 	std::cout << "[INFO] Cloth Information read successfully.\n";
 
 	//Solver simu lation engine and collision engine data
-	fem_solver_ = new ImplicitMassSpringSolver();
-	collisionEngine_ = new CollisionEngine();
-	sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
+	//fem_solver_ = new ImplicitMassSpringSolver();
+	if(USE_FEM) {
+		//fem_solver_ = new ImplicitFEMSolver();
+		fem_solver_ = new ImplicitHyperElasticFEMSolver();
+	}
+	else
+		mass_spring_solver_ = new ImplicitMassSpringSolver();
 
+	collisionEngine_ = new CollisionEngine();
+	
+	if(fem_solver_) {
+		//sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
+		sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
+	}
+	else
+		sim_engine_ = new SimulationEngine(cloth_information_,mass_spring_solver_,body_information_);
 
 
 	//Animaton timer
@@ -160,7 +174,11 @@ void GLWidget::resetAnimation()
 	emit animFrameNumberUpdated(0);
 	emit frameNumberUpdated(0.0); 
 	cloth_information_->resetParameters();
-	fem_solver_->resetParameters();
+	if(fem_solver_)
+		fem_solver_->resetParameters();
+	else
+		mass_spring_solver_->resetParameters();
+
 	sim_engine_->populatePerVertexBuffer();
 	updateGL();
 }

@@ -10,7 +10,7 @@
 	</poisson_ratio>
 	
 	<time_step> 
-		0.033
+		0.0008
 	</time_step>
 	
 	<thickness> 

@@ -109,6 +109,8 @@ Cloth_Data::Cloth_Data( const char* name,
 	next_step_position.resize(num_vertices,Eigen::Vector3d::Zero());
 	next_step_velocity.resize(num_vertices,Eigen::Vector3d::Zero());
 
+	std::cout << "Tilder";
+
 	for(int t=0;t<num_triangles;t++)
 	{
 
@@ -133,31 +135,22 @@ Cloth_Data::Cloth_Data( const char* name,
 		//Get the Isometric UV Parameterization computerd by rotation 
 		Eigen::Vector3d triNorm = tri.getTriangleNormal();
 		Eigen::Vector3d xzAxisNorm = Eigen::Vector3d(0.0,1.0,0.0);
-		//Eigen::Matrix4f rotMatrix = compute_rotation_matrix_a_to_b(triNorm,xzAxisNorm);
 
-		/*float ua1 = p1.x();
-		float va1 = p1.z();
-		float ub1 = p2.x();
-		float vb1 = p2.z();
-		float uc1 = p3.x();
-		float vc1 = p3.z();*/
+		Eigen::Matrix3d rotMatrix = compute_rotation_matrix_a_to_b(triNorm,xzAxisNorm);
 
-		/*float ua = p1.x();
-		float va = p1.z();
-		float ub = p2.x();
-		float vb = p2.z();
-		float uc = p3.x();
-		float vc = p3.z();*/
+		Eigen::Vector3d xz1 = rotMatrix*p1;
+		Eigen::Vector3d xz2 = rotMatrix*p2;
+		Eigen::Vector3d xz3 = rotMatrix*p3;
+
+		float ua = xz1.x();
+		float va = xz1.z();
+		float ub = xz2.x();
+		float vb = xz2.z();
+		float uc = xz3.x();
+		float vc = xz3.z();
 
 
-		/*float ua = i0_t.x();
-		float va = i0_t.y();
-		float ub = i1_t.x();
-		float vb = i1_t.y();
-		float uc = i2_t.x();
-		float vc = i2_t.y();*/
-
-		Eigen::Vector3d x0 = p1-p2;
+		/*Eigen::Vector3d x0 = p1-p2;
 		double lenAB = x0.norm();
 
 		Eigen::Vector3d xn0 = x0.normalized();
@@ -170,13 +163,7 @@ Cloth_Data::Cloth_Data( const char* name,
 		float ub = lenAB;
 		float vb = 0.0;
 		float uc = xn0.dot(x1);
-		float vc = sqrt(lenAC * lenAC - uc * uc);
-
-
-		/*if(t%75==0) {
-			std::cout << "Triangle#" << t << " " << ua << "," << va << "," << ub << "," << vb << "," << uc << "," << vc << "\n";
-			std::cout << "Triangle#" << t << " " << ua1 << "," << va1 << "," << ub1 << "," << vb1 << "," << uc1 << "," << vc1 << "\n";
-		}*/
+		float vc = sqrt(lenAC * lenAC - uc * uc);*/
 
 		Vector7d temp_vertex_distribution;
 
@@ -192,8 +179,65 @@ Cloth_Data::Cloth_Data( const char* name,
 		temp_vertex_distribution(6) = det;
 		vertex_distribution.push_back(temp_vertex_distribution);
 
-		//if(t==34)
-			//std::cout << "INIT# " << t << " "<< temp_vertex_distribution(0) << " " << temp_vertex_distribution(1) << " " << temp_vertex_distribution(2) << " " << temp_vertex_distribution(3) << " " << temp_vertex_distribution(4) << " " << temp_vertex_distribution(5) << "\n"; 
+		Eigen::Matrix2d dmElement;
+		dmElement(0,0)=(ua-uc); dmElement(0,1) = (ub-uc);
+		dmElement(1,0)=(va-vc); dmElement(1,1) = (vb-vc);
+		Eigen::Matrix2d dmElementInv = dmElement.inverse();
+
+		Dm_.push_back(dmElementInv);
+		
+		double detv = dmElement.determinant();
+		double w_element = 0.5*std::abs(detv);
+		W_.push_back(w_element);
+
+		//Compute the edge weighted normals 
+		Eigen::Vector2d p_0(ua,va);
+		Eigen::Vector2d p_1(ub,vb);
+		Eigen::Vector2d p_2(uc,vc);
+
+		//Edge Normal 01
+		Eigen::Vector2d e01 = p_1 - p_0;
+		Eigen::Vector2d e02 = p_2 - p_0;
+		Eigen::Vector2d N01(e01.y(),-e01.x());
+		double dotPdk = N01.dot(e02);
+		if(dotPdk>0)
+		{
+			N01 = -N01;
+		}
+		double edgeLen01 = e01.norm(); 
+		N01.normalize();
+
+		//Edge Normal 02
+		Eigen::Vector2d N02(e02.y(),-e02.x());
+		dotPdk = N02.dot(e01);
+		if(dotPdk>0)
+		{
+			N02 = -N02;
+		}
+		double edgeLen02 = e02.norm();
+		N02.normalize();
+
+		//Edge Normal 12
+		Eigen::Vector2d e12 = p_2 - p_1;
+		Eigen::Vector2d e10 = p_0 - p_1;
+		Eigen::Vector2d N12(e12.y(),-e12.x());
+		dotPdk = N12.dot(e10);
+		if(dotPdk>0)
+		{
+			N12 = -N12;
+		}
+		double edgeLen12 = e12.norm();
+		N12.normalize();
+
+		Eigen::Vector2d ewn0 = 0.5*(edgeLen01*N01 + edgeLen02*N02);
+		edgeWeightedTriangleNormals_.push_back(ewn0);
+
+		Eigen::Vector2d ewn1 = 0.5*(edgeLen01*N01 + edgeLen12*N12);
+		edgeWeightedTriangleNormals_.push_back(ewn1);
+
+		Eigen::Vector2d ewn2 = 0.5*(edgeLen02*N02 + edgeLen12*N12);
+		edgeWeightedTriangleNormals_.push_back(ewn2);
+
 
 	}
 
