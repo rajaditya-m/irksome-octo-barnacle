@@ -27,15 +27,27 @@ class ImplicitHyperElasticFEMSolver :
 	{
 	public:
 		ImplicitHyperElasticFEMSolver(void);
+		void computedFdU(Cloth_Data* cloth);
 		~ImplicitHyperElasticFEMSolver(void);
 
 		void initialize(Cloth_Data *cloth);
-		//void initializeSparseMatrixFromOutline(Cloth_Data *cloth);
+		void initializeSparseMatrixFromOutline(Cloth_Data *cloth);
 		
 		void resetParameters();
 
 		virtual void advance_time_step(Cloth_Data* cloth);
-
+		
+		double computeGammaValues(int i,int j,std::vector<double> &sigma,double IIIC, std::vector<double> &gradient,std::vector<double> &hessian);
+		int compute4x4TensorIndex(int i, int j, int m, int n);
+		int compute4x9TensorIndex(int i, int j, int m, int n);
+	  int compute6x9TensorIndex(int i, int j, int m, int n);
+	  void computeDPDF_Hat(std::vector<double>& sigma, std::vector<double>& gradients, std::vector<double>& hessians, double IIIC, std::vector<double>& DPDF_Hat);
+		Eigen::MatrixXd convert6VectorToEigen3x2Matrix(std::vector<double> &vec);
+		Eigen::MatrixXd convert4VectorToEigen2x2Matrix(std::vector<double> &vec);
+		void computeDPDF(std::vector<double> &DPDF_Hat, Eigen::MatrixXd &U, Eigen::MatrixXd &V,std::vector<double> &DPDF);
+		void computeDGDF(std::vector<double> &DPDF, Eigen::Matrix2d bVec, std::vector<double> &DGDF);
+		void computeElementStiffnessMatrix(int el, std::vector<double>& DGDF, std::vector<double>& KELEM);
+		void addElementStiffnessMatrixToGlobalStiffnessMatrix(Cloth_Data* cloth, int el, std::vector<double>& KELEM);
 		void addShearComponents(Cloth_Data* cloth);
 		void addGravityComponents(Cloth_Data* cloth);
 		void addLinearDamping(Cloth_Data* cloth);
@@ -49,6 +61,7 @@ class ImplicitHyperElasticFEMSolver :
 		//Later on we will need this 
 		Eigen::VectorXd RHSVector_;
 		SparseMatrix *LHSMatrix_;
+		SparseMatrix* tangentStiffnessMatrix_;
 
 		int lastFrameId_;
 		double *massMatrixDiagonal_;
@@ -57,5 +70,12 @@ class ImplicitHyperElasticFEMSolver :
 		//@TODO Later on shift to cloth_data 
 		int numConstrainedVerts_;
 		int *constrainedVerts_;
+
+		//That weird ordering scheme for some reason 
+		std::vector<int> rowMajorMatrixToTeran;
+		std::vector<int> teranToRowMajorMatrix;
+		
+		std::vector<double> dDSdU;
+		std::vector<double> dFdUs;
 	};
 
