@@ -136,7 +136,7 @@ Cloth_Data::Cloth_Data( const char* name,
 		Eigen::Vector3d triNorm = tri.getTriangleNormal();
 		Eigen::Vector3d xzAxisNorm = Eigen::Vector3d(0.0,1.0,0.0);
 
-		Eigen::Matrix3d rotMatrix = compute_rotation_matrix_a_to_b(triNorm,xzAxisNorm);
+		/*Eigen::Matrix3d rotMatrix = compute_rotation_matrix_a_to_b(triNorm,xzAxisNorm);
 
 		Eigen::Vector3d xz1 = rotMatrix*p1;
 		Eigen::Vector3d xz2 = rotMatrix*p2;
@@ -147,10 +147,10 @@ Cloth_Data::Cloth_Data( const char* name,
 		float ub = xz2.x();
 		float vb = xz2.z();
 		float uc = xz3.x();
-		float vc = xz3.z();
+		float vc = xz3.z();*/
 
 
-		/*Eigen::Vector3d x0 = p1-p2;
+		Eigen::Vector3d x0 = p1-p2;
 		double lenAB = x0.norm();
 
 		Eigen::Vector3d xn0 = x0.normalized();
@@ -163,7 +163,7 @@ Cloth_Data::Cloth_Data( const char* name,
 		float ub = lenAB;
 		float vb = 0.0;
 		float uc = xn0.dot(x1);
-		float vc = sqrt(lenAC * lenAC - uc * uc);*/
+		float vc = sqrt(lenAC * lenAC - uc * uc);
 
 		Vector7d temp_vertex_distribution;
 
@@ -180,8 +180,10 @@ Cloth_Data::Cloth_Data( const char* name,
 		vertex_distribution.push_back(temp_vertex_distribution);
 
 		Eigen::Matrix2d dmElement;
-		dmElement(0,0)=(ua-uc); dmElement(0,1) = (ub-uc);
-		dmElement(1,0)=(va-vc); dmElement(1,1) = (vb-vc);
+		//dmElement(0,0)=(ua-uc); dmElement(0,1) = (ub-uc);
+		//dmElement(1,0)=(va-vc); dmElement(1,1) = (vb-vc);
+		dmElement(0,0)=(uc-ua); dmElement(0,1) = (uc-ub);
+		dmElement(1,0)=(vc-va); dmElement(1,1) = (vc-vb);
 		Eigen::Matrix2d dmElementInv = dmElement.inverse();
 
 		Dm_.push_back(dmElementInv);

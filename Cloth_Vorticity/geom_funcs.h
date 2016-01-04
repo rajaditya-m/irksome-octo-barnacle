@@ -138,3 +138,20 @@ inline double pointLineDistance(double *p0, double *p1, double *p, double* lengt
 	distance = std::sqrt((vec2Norm*vec2Norm) - (projectionLength*projectionLength));
 	return distance;
 }
+
+inline Eigen::Vector3d findOrthonormalVector(Eigen::Vector3d &vec)
+{
+  // find smallest abs component of v
+  int smallestIndex = 0;
+  for(int dim=1; dim<3; dim++)
+    if (fabs(vec[dim]) < fabs(vec[smallestIndex]))
+      smallestIndex = dim;
+
+  Eigen::Vector3d axis(0.0, 0.0, 0.0);
+  axis[smallestIndex] = 1.0;
+
+  // this cross-product will be non-zero (as long as v is not zero)
+  Eigen::Vector3d result = vec.cross(axis);
+	result.normalize();
+  return result;
+}

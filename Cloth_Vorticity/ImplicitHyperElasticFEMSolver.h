@@ -19,8 +19,18 @@
 #include "sparseMatrix.h"
 #include "cloth_data.h"
 #include "geom_funcs.h"
+#include "insertRows.h"
+#include "CGSolver.h"
 
-#define ADDCOMPRESSIONRESISTENCE 1
+
+//#define ADDCOMPRESSIONRESISTENCE 
+#define NEOHOOKEAN_MATERIAL
+//#define USE_PARDISO_SOLVER
+#define USE_CG_SOLVER
+//#define ENABLE_RAYLEIGH_DAMPING
+
+#define CORNERV1 50
+#define CORNERV2 2600
 
 class ImplicitHyperElasticFEMSolver :
 	public Dynamics_Solver_Interface
@@ -32,8 +42,8 @@ class ImplicitHyperElasticFEMSolver :
 
 		void initialize(Cloth_Data *cloth);
 		void initializeSparseMatrixFromOutline(Cloth_Data *cloth);
-		
-		void resetParameters();
+	  void initializeMassMatrixFromOutline(Cloth_Data* cloth);
+	  void resetParameters();
 
 		virtual void advance_time_step(Cloth_Data* cloth);
 		
@@ -41,7 +51,10 @@ class ImplicitHyperElasticFEMSolver :
 		int compute4x4TensorIndex(int i, int j, int m, int n);
 		int compute4x9TensorIndex(int i, int j, int m, int n);
 	  int compute6x9TensorIndex(int i, int j, int m, int n);
+	  int compute6x6TensorIndex(int i, int j, int m, int n);
 	  void computeDPDF_Hat(std::vector<double>& sigma, std::vector<double>& gradients, std::vector<double>& hessians, double IIIC, std::vector<double>& DPDF_Hat);
+	  void computeDPDFFrustrating(Eigen::MatrixXd &F,std::vector<double> &gradients, std::vector<double> &hessians,std::vector<double> &DPDF);
+		void computeFirstPiolaStress(Eigen::MatrixXd &F, std::vector<double> &gradients, Eigen::MatrixXd &P);
 		Eigen::MatrixXd convert6VectorToEigen3x2Matrix(std::vector<double> &vec);
 		Eigen::MatrixXd convert4VectorToEigen2x2Matrix(std::vector<double> &vec);
 		void computeDPDF(std::vector<double> &DPDF_Hat, Eigen::MatrixXd &U, Eigen::MatrixXd &V,std::vector<double> &DPDF);
@@ -51,11 +64,13 @@ class ImplicitHyperElasticFEMSolver :
 		void addShearComponents(Cloth_Data* cloth);
 		void addGravityComponents(Cloth_Data* cloth);
 		void addLinearDamping(Cloth_Data* cloth);
-		//void addBendingComponents(Cloth_Data* cloth);
+	void importPreviousStepVelocities(Cloth_Data* cloth);
+	void computeFinalLinearSystem(Cloth_Data* cloth);
+	//void addBendingComponents(Cloth_Data* cloth);
 		void finalizeAndSolve(Cloth_Data* cloth);
+	void finalizeAndSolve_Explicit(Cloth_Data* cloth);
 
-
-	private:
+private:
 		Eigen::VectorXd force_;
 
 		//Later on we will need this 
@@ -77,5 +92,15 @@ class ImplicitHyperElasticFEMSolver :
 		
 		std::vector<double> dDSdU;
 		std::vector<double> dFdUs;
+
+		SparseMatrix *rayleighDampingMatrix_;
+		SparseMatrix *massMatrix_;
+
+		Eigen::VectorXd internalForce_;
+		Eigen::VectorXd externalForce_;
+
+		Eigen::VectorXd residuals_;
+		Eigen::VectorXd velocities_;
+
 	};
 
