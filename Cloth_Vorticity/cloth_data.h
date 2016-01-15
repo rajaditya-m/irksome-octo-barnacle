@@ -50,6 +50,8 @@ public:
 	//Mutator methods
 	void set_next_step_pos(Eigen::Vector3d& pos, int idx)			{ next_step_position[idx] = pos ;		}
 	void set_next_step_velocity(Eigen::Vector3d& vel, int idx)		{ next_step_velocity[idx] = vel;		}
+	void setCurrentStepPositions(Eigen::Vector3d &pos, int idx);
+	void setCurrentStepVelocity(Eigen::Vector3d &vel,int idx);
 	void setPerVertexVectorBuffer(std::vector<Eigen::Vector3d> &v)	{ perVertexVectorBuffer_ = v;			}
 	void finalize_velocity_position();
 

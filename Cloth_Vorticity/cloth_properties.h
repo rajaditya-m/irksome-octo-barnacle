@@ -29,6 +29,8 @@ public:
 	float getQuadBendStiffness() const { return qBStiffness_;}
 	float getQuadBendDamping()  const { return qBDamping_;}
 	std::string getDataDumpLoc() const { return dataDumpLocation_;}
+	float getRayleighDampingCoeff() const { return rayDampCoeff_;}
+	float getRayleighMassCoeff() const { return rayMassCoeff_;}
 
 private:
 	float youngs_modulus;
@@ -44,4 +46,7 @@ private:
 	std::string dataDumpLocation_;
 	float qBStiffness_;
 	float qBDamping_;
+	float rayDampCoeff_;
+	float rayMassCoeff_;
+
 };

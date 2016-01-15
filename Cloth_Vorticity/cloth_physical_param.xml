@@ -6,7 +6,7 @@
 	</youngs_modulus>
 	
 	<poisson_ratio> 
-		0.38 
+		0.01 
 	</poisson_ratio>
 	
 	<time_step> 
@@ -46,12 +46,24 @@
   </quad_damping>
 
   <quad_stiffness>
-    0.001
+    0.01
   </quad_stiffness>
 
+  <rayleigh_damp_coeff>
+    0.01
+  </rayleigh_damp_coeff>
+
+  <rayleigh_mass_coeff>
+    1.0
+  </rayleigh_mass_coeff>
+    
   <data_dump_location>
-    F:\\Cloth_Sim_Data
+    C:\\Cloth_Sim_Data
   </data_dump_location>
+  
+  
+  
+  
   
 	
 </property>

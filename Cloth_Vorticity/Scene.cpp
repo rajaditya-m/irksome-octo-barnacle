@@ -385,3 +385,29 @@ void Scene::saveObjs(int code) {
 		}
 	}
 }
+
+void Scene::updateOBJPrefixes(std::string &prefix)
+{
+	boost::trim(prefix);
+	const char* suffix = prefix.c_str();
+	//Get the current date and time also and create a folder 
+	std::chrono::time_point<std::chrono::system_clock> timeNow;
+	timeNow = std::chrono::system_clock::now();
+	std::time_t timeNowT = std::chrono::system_clock::to_time_t(timeNow);
+	const char* timeStr = std::ctime(&timeNowT);
+	std::string timeS(timeStr);
+	boost::replace_all(timeS," ","_");
+	boost::replace_all(timeS,":","_");
+	boost::trim(timeS);
+	std::stringstream ssc;
+	ssc << suffix << "\\" << timeS << "\\Cloth";
+	clothPrefix_ = ssc.str();
+	std::stringstream ssb;
+	ssb << suffix << "\\" << timeS << "\\Body";
+	bodyPrefix_ = ssb.str();
+	dirsCreated_ = false;
+
+	std::cout << clothPrefix_ << "\n";
+	std::cout << bodyPrefix_ << "\n";
+
+}

@@ -20,7 +20,8 @@ ClothProperties::ClothProperties(const char* property_xml)
 	qBDamping_ = pt.get<float>("property.quad_damping");
 	qBStiffness_ = pt.get<float>("property.quad_stiffness");
 	dataDumpLocation_ = pt.get<std::string>("property.data_dump_location");
-
+	rayDampCoeff_ = pt.get<float>("property.rayleigh_damp_coeff");
+	rayMassCoeff_ = pt.get<float>("property.rayleigh_mass_coeff");
 }
 
 

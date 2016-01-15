@@ -18,7 +18,7 @@ GLWidget::GLWidget(QWidget *parent)
 		"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Collision_Obj_textures.bin",
 		"body_material.xml");*/
 	body_information_ = new Body_Data("Sphere"
-		,"D://Copy/Cloth_OBJS/support.obj",
+		,"D://Copy//Cloth_OBJS//support.obj",
 		"body_material.xml");
 	body_information_->setRenderable(true);
 	body_information_->setRenderMode(SHADING);
@@ -30,13 +30,16 @@ GLWidget::GLWidget(QWidget *parent)
 		"cloth_physical_param.xml",
 		"cloth_material.xml");*/
 	cloth_information_ = new Cloth_Data("Drop_Cloth",
-		"D://Copy/Cloth_OBJS/cloth2.obj",
+		"D://Copy//Cloth_OBJS//cloth2.obj",
 		"cloth_physical_param.xml",
 		"cloth_material.xml");
 	cloth_information_->setRenderable(true);
 	cloth_information_->setRenderMode(SHADING);
 	scene_->addRenderObject(cloth_information_);
 	std::cout << "[INFO] Cloth Information read successfully.\n";
+
+	std::string &fileSavePrefix = cloth_information_->get_property_obj()->getDataDumpLoc();
+	scene_->updateOBJPrefixes(fileSavePrefix);
 
 	//Solver simu lation engine and collision engine data
 	//fem_solver_ = new ImplicitMassSpringSolver();

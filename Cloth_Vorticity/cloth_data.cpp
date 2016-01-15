@@ -286,3 +286,14 @@ void Cloth_Data::resetParameters()
 	std::fill(next_step_velocity.begin(),next_step_velocity.end(),Eigen::Vector3d::Zero());
 	mesh_->resetMeshDefaults();
 }
+
+void Cloth_Data::setCurrentStepPositions(Eigen::Vector3d &pos, int idx)
+{
+	int curFrameIdx = mesh_->get_number_frames();
+	mesh_->set_point_data(pos,idx,curFrameIdx-1);
+}
+
+void Cloth_Data::setCurrentStepVelocity(Eigen::Vector3d &vel,int idx)
+{
+	velocity[idx] = vel;
+}

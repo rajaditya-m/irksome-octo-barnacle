@@ -57,6 +57,11 @@ public:
 	//Save as functions 
 	void saveObjs(int code);
 
+
+	//update the prefixes
+	void updateOBJPrefixes(std::string &prefix);
+
+
 	//Rendering Functions 
 	void renderScene();
 	void setupScene();
