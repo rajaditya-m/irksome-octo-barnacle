@@ -182,6 +182,7 @@
     <ClCompile Include="ImplicitFEMSolver.cpp" />
     <ClCompile Include="ImplicitHyperElasticFEMSolver.cpp" />
     <ClCompile Include="ImplicitMassSpringSolver.cpp" />
+    <ClCompile Include="InactiveSupportObjects.cpp" />
     <ClCompile Include="insertRows.cpp" />
     <ClCompile Include="linearSolver.cpp" />
     <ClCompile Include="main.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="ImplicitFEMSolver.h" />
     <ClInclude Include="ImplicitHyperElasticFEMSolver.h" />
     <ClInclude Include="ImplicitMassSpringSolver.h" />
+    <ClInclude Include="InactiveSupportObjects.h" />
     <ClInclude Include="insertRows.h" />
     <ClInclude Include="linearSolver.h" />
     <ClInclude Include="math_func.h" />

@@ -12,23 +12,13 @@ GLWidget::GLWidget(QWidget *parent)
 	scene_ = new Scene();
 
 	//body and cloth data - renderable objects 
-	/*body_information_ = new Body_Data("Sphere"
-		,"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Collision_Obj_vertex.bin",
-		"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Collision_Obj_mesh.bin",
-		"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Collision_Obj_textures.bin",
-		"body_material.xml");*/
 	body_information_ = new Body_Data("Sphere"
-		,"D://Copy//Cloth_OBJS//support.obj",
+		,"D://Copy//Cloth_OBJS//ball2.obj",
 		"body_material.xml");
 	body_information_->setRenderable(true);
 	body_information_->setRenderMode(SHADING);
 	scene_->addRenderObject(body_information_);
-	std::cout << "[INFO] Body Information read successfully.\n";
-	/*cloth_information_ = new Cloth_Data("Drop_Cloth","C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Cloth_Sheet_vertex.bin",
-		"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Cloth_Sheet_mesh.bin",
-		"C:/Users/Rajaditya/Copy/Models/Drop_Cloth_Test/Cloth_Sheet_textures.bin",
-		"cloth_physical_param.xml",
-		"cloth_material.xml");*/
+
 	cloth_information_ = new Cloth_Data("Drop_Cloth",
 		"D://Copy//Cloth_OBJS//cloth2.obj",
 		"cloth_physical_param.xml",
@@ -36,15 +26,19 @@ GLWidget::GLWidget(QWidget *parent)
 	cloth_information_->setRenderable(true);
 	cloth_information_->setRenderMode(SHADING);
 	scene_->addRenderObject(cloth_information_);
-	std::cout << "[INFO] Cloth Information read successfully.\n";
+
+	support_ = new InactiveSupportObjects("Poles",
+		"D://Copy//Cloth_OBJS//support.obj",
+		"body_material.xml");
+	support_->setRenderable(true);
+	support_->setRenderMode(SHADING);
+	scene_->addRenderObject(support_);
 
 	std::string &fileSavePrefix = cloth_information_->get_property_obj()->getDataDumpLoc();
 	scene_->updateOBJPrefixes(fileSavePrefix);
 
 	//Solver simu lation engine and collision engine data
-	//fem_solver_ = new ImplicitMassSpringSolver();
 	if(USE_FEM) {
-		//fem_solver_ = new ImplicitFEMSolver();
 		fem_solver_ = new ImplicitHyperElasticFEMSolver();
 	}
 	else
@@ -54,10 +48,10 @@ GLWidget::GLWidget(QWidget *parent)
 	
 	if(fem_solver_) {
 		//sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
-		sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_);
+		sim_engine_ = new SimulationEngine(cloth_information_,fem_solver_,body_information_,collisionEngine_);
 	}
 	else
-		sim_engine_ = new SimulationEngine(cloth_information_,mass_spring_solver_,body_information_);
+		sim_engine_ = new SimulationEngine(cloth_information_,mass_spring_solver_,body_information_,collisionEngine_);
 
 
 	//Animaton timer

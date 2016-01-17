@@ -8,6 +8,7 @@
 #include "global_typedefs.h"
 #include "body_data.h"
 #include "cloth_data.h"
+#include "InactiveSupportObjects.h"
 #include "ImplicitFEMSolver.h"
 #include "ImplicitHyperElasticFEMSolver.h"
 //#include "ImplicitMassSpringSolver.h"
@@ -69,6 +70,7 @@ signals:
 private:
 	Body_Data *body_information_;
 	Cloth_Data *cloth_information_;
+	InactiveSupportObjects* support_;
 	//ImplicitFEMSolver* fem_solver_;
 	ImplicitHyperElasticFEMSolver* fem_solver_;
 	ImplicitMassSpringSolver* mass_spring_solver_;

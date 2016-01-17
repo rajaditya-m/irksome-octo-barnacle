@@ -1,4 +1,6 @@
 #include "body_data.h"
+#include "triMesh.h"
+#include "RenderObject.h"
 
 
 Body_Data::Body_Data(const char* name,const char* file_location,const char* material_xml,int seq_limit,int start_frame)

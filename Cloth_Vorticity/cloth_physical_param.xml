@@ -6,11 +6,11 @@
 	</youngs_modulus>
 	
 	<poisson_ratio> 
-		0.01 
+		0.01
 	</poisson_ratio>
 	
 	<time_step> 
-		0.001
+		0.01
 	</time_step>
 	
 	<thickness> 
@@ -46,7 +46,7 @@
   </quad_damping>
 
   <quad_stiffness>
-    0.01
+    0.001
   </quad_stiffness>
 
   <rayleigh_damp_coeff>

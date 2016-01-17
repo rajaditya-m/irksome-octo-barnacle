@@ -1,28 +1,31 @@
 #include "SimulationEngine.h"
 
 
-SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitFEMSolver* solver,Body_Data* body_data)
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitFEMSolver* solver,Body_Data* body_data,CollisionEngine* collEngine)
 {
 	clothData_ = cloth_data;
 	solver_ = solver;
 	solver_->initialize(clothData_);
 	bodyData_ = body_data;
+	collEngine_ = collEngine;
 }
 
-SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitMassSpringSolver* solver,Body_Data* body_data)
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitMassSpringSolver* solver,Body_Data* body_data,CollisionEngine* collEngine)
 {
 	clothData_ = cloth_data;
 	solver_ = solver;
 	solver_->initialize(clothData_);
 	bodyData_ = body_data;
+	collEngine_ = collEngine;
 }
 
-SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitHyperElasticFEMSolver* solver,Body_Data* body_data)
+SimulationEngine::SimulationEngine(Cloth_Data* cloth_data,ImplicitHyperElasticFEMSolver* solver,Body_Data* body_data,CollisionEngine* collEngine)
 {
 	clothData_ = cloth_data;
 	solver_ = solver;
 	solver_->initialize(clothData_);
 	bodyData_ = body_data;
+	collEngine_ = collEngine;
 }
 
 
@@ -36,10 +39,10 @@ void SimulationEngine::generate_next_frame()
 	solver_->advance_time_step(clothData_);
 	
 	//Then apply the collision engine
-	//collision_engine->resolve_cloth_body_collisions(cloth_data,body_data);
+	//collEngine_->resolve_cloth_body_collisions(cloth_data,body_data);
 	
 	//Then resolve self collisions 
-	//collision_engine->resolve_cloth_cloth_collisions(cloth_data);
+	//collEngine_->resolve_cloth_cloth_collisions(cloth_data);
 	
 	//Finalize the velocity and positions
 	clothData_->finalize_velocity_position();
@@ -48,6 +51,7 @@ void SimulationEngine::generate_next_frame()
 	populatePerVertexBuffer();
 }
 
+//We will implement this function later on as per the need. For now this does nothing. 
 void SimulationEngine::populatePerVertexBuffer()
 {
 	/*switch(clothData_->getRenderMode())

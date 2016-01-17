@@ -125,6 +125,9 @@
     <ClCompile Include="ImplicitHyperElasticFEMSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InactiveSupportObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="cloth_vorticity.h">
@@ -232,6 +235,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="ImplicitHyperElasticFEMSolver.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InactiveSupportObjects.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
